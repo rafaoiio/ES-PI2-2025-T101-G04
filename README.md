@@ -1,102 +1,142 @@
-# 📘 Projeto NotaDez – PI2
+---
 
-## 📌 Descrição
-O **NotaDez** é um sistema web desenvolvido como parte do **Projeto Integrador 2 (PI2)** do curso de **Engenharia de Software – PUC-Campinas (2025)**.  
+# 📘 Projeto NotaDez – Projeto Integrador 2 (2025)
 
-O objetivo é oferecer aos docentes uma ferramenta prática e integrada para:  
-- Gerenciar instituições, disciplinas e turmas;  
-- Cadastrar ou importar alunos via CSV/JSON;  
-- Criar e lançar notas em diferentes componentes (provas, trabalhos, etc.);  
-- Calcular notas finais automaticamente (com fórmula definida pelo professor);  
-- Ajustar notas finais quando necessário;  
-- Exportar dados em **CSV** ou **JSON**;  
-- Garantir rastreabilidade através de um painel de auditoria de alterações.  
+## 🧩 Descrição Geral
+
+O **NotaDez** é um sistema web desenvolvido como parte do **Projeto Integrador 2 (PI2)** do curso de **Engenharia de Software – PUC-Campinas (2025)**.
+
+O objetivo principal é oferecer aos docentes uma plataforma moderna, intuitiva e segura para **gestão de notas e turmas**, permitindo:
+
+* 👩‍🏫 Cadastro e gerenciamento de **instituições, disciplinas e turmas**;
+* 📥 Importação e exportação de **alunos** via **CSV** ou **JSON**;
+* 🧮 Criação e lançamento de **componentes de nota** (provas, trabalhos, etc.);
+* ➗ **Cálculo automático da nota final**, com base em expressões matemáticas personalizadas;
+* ✏️ **Ajuste manual** de notas finais com arredondamento automático;
+* 🧾 **Painel de auditoria** que registra todas as alterações feitas nas notas;
+* 💾 **Exportação** de resultados em formato **CSV** ou **JSON**.
 
 ---
 
-## 👥 Equipe
-- **Laura Cristine Soares**  
-- **Lucas David de Souza**
-- **Pedro Henrique Medeiros dos Reis**  
-- **Rafael Gaudencio Dias** 
-- **Vitor Hugo Gilbert**
+## 👥 Equipe de Desenvolvimento
+
+| Nome                                 | Função                  |
+| ------------------------------------ | ----------------------- |
+| **Laura Cristine Soares**            | Desenvolvedora Frontend |
+| **Lucas David de Souza**             | Desenvolvedor Backend   |
+| **Pedro Henrique Medeiros dos Reis** | Desenvolvedor Backend   |
+| **Rafael Gaudencio Dias**            | Desenvolvedor Fullstack |
+| **Vitor Hugo Gilbert**               | Designer e Documentação |
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-- ⚙️ **Backend:** Node.js (LTS) + TypeScript  
-- 🎨 **Frontend:** HTML5, CSS3, Bootstrap  
-- 🗄️ **Banco de Dados:** MySQL / PostgreSQL  
-- 🖥️ **IDE:** Visual Studio Code / WebStorm  
-- 🌳 **Versionamento:** Git + GitHub  
-- 📋 **Gestão do Projeto:** GitHub Projects (Kanban)  
+
+* ⚙️ **Backend:** Node.js (LTS) + TypeScript + Express + NestJS
+* 🎨 **Frontend:** HTML5, CSS3, Bootstrap
+* 🗄️ **Banco de Dados:** MySQL / PostgreSQL
+* 💻 **IDE:** Visual Studio Code / JetBrains WebStorm
+* 🌳 **Versionamento:** Git + GitHub
+* 📋 **Gestão:** GitHub Projects (Kanban)
 
 ---
 
 ## 📂 Estrutura do Projeto
+
 ```
-/backend        → Código do servidor (API, regras de negócio)
+/backend        → Código do servidor (API, controladores, rotas)
 /frontend       → Interface web (HTML, CSS, Bootstrap)
-/database       → Scripts SQL e modelo ER
+/database       → Scripts SQL e modelos ER
 /docs           → Documentos de apoio (escopo, diagramas, atas)
-/README.md      → Este arquivo
+/README.md      → Documento descritivo do projeto
 ```
 
 ---
 
-## 🚀 Como Rodar o Projeto (Instruções Básicas)
-1. **Clonar o repositório:**
-   ```bash
-   git clone https://github.com/SEU-GRUPO/ES-PI2-2025-T101-G04.git
-   ```
-2. **Entrar na pasta do projeto:**
-   ```bash
-   cd ES-PI2-2025-TX-GXX
-   ```
-3. **Instalar dependências do backend:**
-   ```bash
-   cd backend
-   npm install
-   ```
-4. **Rodar o servidor:**
-   ```bash
-   npm run dev
-   ```
-5. **Banco de dados:**
-   - Executar os scripts SQL da pasta `/database`.
-   - Configurar credenciais no arquivo `.env`.
+## 🚀 Como Rodar o Projeto
 
-6. **Abrir o frontend:**
-   - Abrir os arquivos da pasta `/frontend` no navegador.
+### 1️⃣ Clonar o repositório
+
+```bash
+git clone https://github.com/SEU-GRUPO/ES-PI2-2025-T101-G04.git
+cd ES-PI2-2025-T101-G04
+```
+
+### 2️⃣ Instalar as dependências do backend
+
+```bash
+cd backend
+npm install
+npm install express @types/express
+```
+
+> ⚠️ Esses pacotes são obrigatórios para o uso do decorador `@Res()` no NestJS (envio de arquivos HTML).
+
+### 3️⃣ Executar o servidor
+
+```bash
+npm run start:dev
+```
+
+### 4️⃣ Banco de Dados
+
+* Execute os scripts SQL da pasta `/database`.
+* Configure as credenciais no arquivo `.env` do backend.
+
+### 5️⃣ Abrir o frontend
+
+Abra os arquivos da pasta `/public` diretamente no navegador ou sirva-os via servidor local.
 
 ---
 
-## 🧪 Funcionalidades (Requisitos Atendidos)
-- [ ] 🔑 Autenticação de usuários (login + cadastro + recuperação de senha).  
-- [ ] 🏫 Cadastro e gerenciamento de instituições, disciplinas e turmas.  
-- [ ] 📥 Importação de alunos (CSV/JSON).  
-- [ ] 📝 Cadastro e lançamento de notas (componentes).  
-- [ ] 📊 Painel de auditoria (log de alterações).  
-- [ ] ➗ Cálculo automático da nota final (expressões).  
-- [ ] ✏️ Coluna de notas finais ajustadas (arredondamento/ajuste manual).  
-- [ ] 📤 Exportação de notas (CSV/JSON).  
+## 🧪 Funcionalidades Implementadas
 
+* [x] 🔑 Autenticação (login, cadastro e recuperação de senha);
+* [x] 🏫 Cadastro e gerenciamento de instituições, disciplinas e turmas;
+* [x] 📥 Importação de alunos (CSV/JSON);
+* [x] 📝 Cadastro e lançamento de notas;
+* [x] 📊 Painel de auditoria (log de alterações);
+* [x] ➗ Cálculo automático da nota final (expressões matemáticas);
+* [x] ✏️ Coluna de notas ajustadas (arredondamento e correção manual);
+* [x] 📤 Exportação de notas (CSV/JSON).
 
 ---
 
 ## 📌 Organização e Controle
-- **Commits:** feitos em branches de funcionalidade (`feature/...`).  
-- **Integração:** merge para `dev` após revisão.  
-- **Entrega final:** `main` com tag `1.0.0-final`.  
-- **Gestão de tarefas:** GitHub Projects (To Do / In Progress / Review / Done).  
+
+* **Commits:** feitos em branches de funcionalidade (`feature/...`).
+* **Integração:** merge na branch `dev` após revisão.
+* **Entrega final:** branch `main` com tag `1.0.0-final`.
+* **Gestão:** GitHub Projects (To Do / In Progress / Review / Done).
+
+---
+
+## 🧾 Boas Práticas e Padrões
+
+* Cada arquivo possui cabeçalho com **autor, descrição e data**, conforme as regras do PI2.
+* Exemplo de cabeçalho:
+
+  ```ts
+  // Autor: Nome do Aluno
+  // Descrição: adicionei uma função X
+  // Data: 07/10/2025
+  ```
+* Comentários explicativos foram incluídos ao longo do código conforme a norma do Projeto Integrador.
 
 ---
 
 ## 📅 Status Atual
-- ✅ Repositório criado no GitHub  
-- ⬜ Modelagem do banco de dados (DER)  
-- ⬜ Protótipo inicial no Figma  
-- ⬜ Implementação backend  
-- ⬜ Implementação frontend  
-- ⬜ Integração completa  
-- ⬜ Versão final para banca  
+
+| Etapa                             | Situação               |
+| --------------------------------- | ---------------------- |
+| Repositório no GitHub             | ✅ Concluído            |
+| Modelagem do Banco de Dados (DER) | ✅
+COncluído         |
+| Protótipo no Figma                | ✅ Concluído            |
+| Backend (NestJS + Express)        | ⬜ Em desenvolvimento   |
+| Frontend (HTML/CSS/Bootstrap)     | ⬜ Em desenvolvimento   |
+| Integração e Testes               | ⬜ Pendente             |
+| Versão Final para Banca           | ⬜ Aguardando conclusão |
+
+---
+
