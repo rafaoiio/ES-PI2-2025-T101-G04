@@ -1,5 +1,6 @@
 // Autor: Rafael Gaudencio Dias
-//Descrição: 
+//Descrição: // Descrição: Módulo raiz da aplicação. Responsável por configurar os controladores (API e páginas web),
+//             registrar os provedores principais e habilitar o serviço de arquivos estáticos (public/).
 // Observação: requer instalação dos pacotes 'npm i @nestjs/serve-static'
 // Data: 07/10/2025 : 00:30
 
