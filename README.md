@@ -130,8 +130,7 @@ Abra os arquivos da pasta `/public` diretamente no navegador ou sirva-os via ser
 | Etapa                             | Situação               |
 | --------------------------------- | ---------------------- |
 | Repositório no GitHub             | ✅ Concluído            |
-| Modelagem do Banco de Dados (DER) | ✅
-COncluído         |
+| Modelagem do Banco de Dados (DER) | ✅ Concluído            |
 | Protótipo no Figma                | ✅ Concluído            |
 | Backend (NestJS + Express)        | ⬜ Em desenvolvimento   |
 | Frontend (HTML/CSS/Bootstrap)     | ⬜ Em desenvolvimento   |
