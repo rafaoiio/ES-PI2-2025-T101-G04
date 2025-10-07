@@ -1,5 +1,3 @@
----
-
 # 📘 Projeto NotaDez – Projeto Integrador 2 (2025)
 
 ## 🧩 Descrição Geral
