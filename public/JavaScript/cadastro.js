@@ -2,6 +2,8 @@
 // Descrição: Gerencia o cadastro de novos usuários, validando campos e senhas, enviando os dados para /users, 
 // exibindo mensagens de sucesso ou erro e limpando o formulário após o registro.
 
+console.log('[cadastro] script carregado');
+
 const USERS_URL = '/users';
 
 const $ = (id) => document.getElementById(id);
@@ -13,28 +15,37 @@ const errBox = $('msgErro');
 function showMsg(el, text) {
   okBox.style.display = 'none';
   errBox.style.display = 'none';
-  el.textContent = text;
+  el.textContent = String(text ?? '');
   el.style.display = 'block';
 }
 
-form.addEventListener('submit', async (e) => {
+if (!form) {
+  console.error('[cadastro] formCadastro NÃO encontrado no DOM');
+  alert('Erro: formulário não encontrado. Verifique o id="formCadastro" e o <script src="/js/cadastro.js" defer>.');
+}
+
+form?.addEventListener('submit', async (e) => {
   e.preventDefault();
+  console.log('[cadastro] submit disparado');
 
-  const name     = $('nome').value.trim();
-  const email    = $('email').value.trim();
-  const password = $('senha').value;
-  const confirm  = $('confirmar').value;
-  const phone    = $('telefone').value.trim();
+  const nome      = $('nome')?.value.trim();
+  const email     = $('email')?.value.trim();
+  const senha     = $('senha')?.value;
+  const confirmar = $('confirmar')?.value;
+  const telefone  = $('telefone')?.value.trim();
 
-  if (!name || !email || !password || !confirm) {
+  if (!nome || !email || !senha || !confirmar) {
     return showMsg(errBox, 'Preencha todos os campos obrigatórios.');
   }
-  if (password.length < 6) {
+  if (senha.length < 6) {
     return showMsg(errBox, 'A senha deve ter ao menos 6 caracteres.');
   }
-  if (password !== confirm) {
+  if (senha !== confirmar) {
     return showMsg(errBox, 'As senhas não conferem.');
   }
+
+  const payload = { nome, email, senha, telefone: telefone || undefined };
+  console.log('[cadastro] enviando:', payload);
 
   btn.disabled = true;
   btn.textContent = 'Enviando...';
@@ -43,31 +54,27 @@ form.addEventListener('submit', async (e) => {
     const resp = await fetch(USERS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, phone: phone || undefined }),
+      body: JSON.stringify(payload),
     });
 
-    if (resp.ok) {
-      const user = await resp.json();
-      showMsg(okBox, `Usuário criado! ID: ${user.id} | E-mail: ${user.email}`);
-      form.reset();
-      return;
+    console.log('[cadastro] status:', resp.status);
+
+    // Alguns backends retornam 201 sem corpo; trate isso
+    let bodyText = await resp.text();
+    let json = null;
+    try { json = bodyText ? JSON.parse(bodyText) : null; } catch { /* corpo não-JSON */ }
+
+    if (!resp.ok) {
+      const msg = json?.message || bodyText || `Falha ao cadastrar (${resp.status}).`;
+      return showMsg(errBox, msg);
     }
 
-    // Erros conhecidos da API
-    if (resp.status === 409) {
-      const j = await resp.json().catch(() => ({}));
-      return showMsg(errBox, j.message || 'E-mail já cadastrado.');
-    }
-    if (resp.status === 400) {
-      const j = await resp.json().catch(() => ({}));
-      const detail = Array.isArray(j.message) ? j.message.join('; ') : (j.message || 'Dados inválidos.');
-      return showMsg(errBox, detail);
-    }
-
-    // Fallback
-    const txt = await resp.text().catch(() => '');
-    showMsg(errBox, `Falha ao cadastrar (${resp.status}). ${txt}`);
+    // Sucesso
+    const user = json || {};
+    showMsg(okBox, `Usuário criado! ID: ${user.id ?? '(sem id)'} | E-mail: ${user.email ?? email}`);
+    form.reset();
   } catch (err) {
+    console.error('[cadastro] erro fetch:', err);
     showMsg(errBox, `Erro de rede: ${err?.message || err}`);
   } finally {
     btn.disabled = false;

@@ -6,12 +6,12 @@ import { Injectable, NotFoundException, ConflictException, InternalServerErrorEx
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { User } from './user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Professor } from './user.entity';
+import { CreateProfessorDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>)
+  constructor(@InjectRepository(Professor) private repo: Repository<Professor>)
   //permite que eu use a tabela User no banco
   {}
 
@@ -23,9 +23,9 @@ export class UsersService {
       select: 
       { 
         id: true, 
-        name: true, 
+        nome: true, 
         email: true, 
-        phone: true, 
+        telefone: true, 
         createdAt: true, 
         updatedAt: true 
       },
@@ -37,7 +37,7 @@ export class UsersService {
   async findOnePublic(id: number) {
     return this.repo.findOne({
       where: { id },
-      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true },
+      select: { id: true, nome: true, email: true, createdAt: true, updatedAt: true },
     });
 
     //Retorno apenas um usuário pelo Id, retornando apenas os campos públicos
@@ -58,7 +58,7 @@ export class UsersService {
     // Busco um usuário pelo email
   }
 
-  async create(dto: CreateUserDto): Promise<Partial<User>> {
+  async create(dto: CreateProfessorDto): Promise<Partial<Professor>> {
     //crio um novo usuário a partir dos dados cadastrados
 
 
@@ -67,19 +67,19 @@ export class UsersService {
     // Verifico se o email já existe e se sim ele impede o cadastro
 
     try {
-      const passwordHash = await bcrypt.hash(dto.password, 10);
-      const user = this.repo.create({
-        name: dto.name,
+      const senhaHash = await bcrypt.hash(dto.senha, 10);
+      const professor = this.repo.create({
+        nome: dto.nome,
         email: dto.email,
-        passwordHash,
-        phone:dto.phone,
+        senha: senhaHash,
+        telefone:dto.telefone,
       });
       // Criptografo a senha com o bcrypt e nunca salvo a senha real
 
-      const saved = await this.repo.save(user);
+      const salvo = await this.repo.save(professor);
       // salfvo o novo usuário no banco
 
-      const { passwordHash: _, ...pub } = saved as any;
+      const { senha: _, ...pub } = salvo as any;
       return pub;
       // Removo o campo da senha e devolvo só os dados públicos
 

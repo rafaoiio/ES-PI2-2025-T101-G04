@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy)
   async validate(payload: any) {
     // função sendo executada depois que o token é validado
     // dados contidos dentro do token { sub, email, name, iat, exp }
-    return { userId: payload.sub, email: payload.email, name: payload.name };
+    return { userId: payload.sub, email: payload.email, name: payload.nome };
     // retorno as informações do usuário para o request, e deixo acessível
   }
 }

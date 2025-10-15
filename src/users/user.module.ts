@@ -3,12 +3,12 @@
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { Professor } from './user.entity';
 import { UsersService } from './user.service';
 import { UsersController } from './user.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([Professor])],
   //conecto ao TypeOrm dizendo que vou usar a entidade User no banco de dados
   providers: [UsersService],
   // O UserService contém a lógica dos usuários

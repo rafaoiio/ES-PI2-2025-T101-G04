@@ -5,13 +5,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../user.entity';
+import { Professor } from '../user.entity';
 import { IsDateString, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private repo: Repository<User>,
+    @InjectRepository(Professor) private repo: Repository<Professor>,
     // Injeto o repositório do TypeOrm para a entidade User 
   ) {}
 
@@ -25,8 +25,8 @@ export class UsersService {
     // Busco um usuário pelo id
   }
 
-  async create(data: Partial<User>) {
-    if (!data.name) {
+  async create(data: Partial<Professor>) {
+    if (!data.nome) {
       throw new Error('Campo "name" é obrigatório');
     }
     const user = this.repo.create(data);
@@ -53,20 +53,20 @@ export class UsersService {
 // Busco um usuário por email.
 }
 
-export class CreateUserDto{
+export class CreateProfessorDto{
   @IsString()
   @MinLength(2)
-  name!: string;
+  nome!: string;
 
   @IsEmail()
   email!: string;
 
   @IsString()
   @MinLength(6)
-  password!: string;
+  senha!: string;
   
   @IsOptional()
   @IsString()
-  phone?: string;
+  telefone?: string;
   
 }

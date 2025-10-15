@@ -4,34 +4,34 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
 
-@Entity('USERS_NOTADEZ')
+@Entity('PROFESSOR')
 // diz que essa clasee representa a tabela descrita...
 @Unique(['email'])
 // garanto que não exista dois usuários com o mesmo email.
-export class User {                   
-  @PrimaryGeneratedColumn({ type: 'number' })
+export class Professor {                   
+  @PrimaryGeneratedColumn({ name: 'ID_PROFESSOR', type: 'number' })
   id: number;
-  //crio a coluna id( que é chave primária ) e é gerada automaticamente
+  //crio a coluna number( que é chave primária ) e é gerada automaticamente
 
-  @Column({ type: 'varchar2', length: 150 })
-  name: string;
+  @Column({ name: 'NOME', type: 'varchar2', length: 120 })
+  nome: string;
   // Coluna name
 
-  @Column({ type: 'varchar2', length: 180 })
+  @Column({ name: 'EMAIL', type: 'varchar2', length: 150 })
   email: string;
   // Coluna email
 
-  @Column({ type: 'varchar2', length: 200 })
-  passwordHash: string;
+  @Column({ name: 'SENHA', type: 'varchar2', length: 200 })
+  senha: string; // hash
   // coluna que guarda a senha, nunca é a senha real
 
-  @Column({type: 'varchar2', length: 30,  nullable: true })
-  phone?: string;
+  @Column({ name: 'TELEFONE_CELULAR', type: 'varchar2', length: 30, nullable: true })
+  telefone?: string;
   // coluna phone
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ name: 'CREATED_AT', type: 'timestamp', nullable: true })
   createdAt: Date;
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ name: 'UPDATED_AT', type: 'timestamp', nullable: true })
   updatedAt: Date;
   // Guardo a data e a hora da criação do usuário e se tiver, da atualização
 

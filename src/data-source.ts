@@ -1,4 +1,4 @@
-//Autor Rafael Gaudencio Dias
+//Autor: Rafael Gaudencio Dias
 // Descrição: Arquivo que configura a conexão do TypeORM com o banco Oracle, definindo entidades, migrations
 //  e ajustes diferentes para desenvolvimento e produção.
 

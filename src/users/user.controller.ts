@@ -3,8 +3,8 @@
 
 import { Controller, Get, Post, Param, Delete, Body, NotFoundException, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './user.service';
-import { User } from './user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Professor } from './user.entity';
+import { CreateProfessorDto } from './dto/create-user.dto';
 
 @Controller('users') 
 // esse arquivo cuida das rotas que começam com /users
@@ -14,7 +14,7 @@ export class UsersController {
   {}
 
   @Get()
-  findAll(): Promise<Partial<User>[]>
+  findAll(): Promise<Partial<Professor>[]>
   // vou devolver uma lista de usuários sem dados sensíveis
   {
     return this.users.findAllPublic();
@@ -22,7 +22,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Partial<User>>
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Partial<Professor>>
   // pego o id da URL e garanto que é um número
   {
     const user = await this.users.findOnePublic(id);
@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() dto: CreateUserDto)
+  create(@Body() dto: CreateProfessorDto)
   // lê os dados do corpo da requisição ( que foi validado pelo DTO )
   {
   return this.users.create(dto); // service faz o hash e salva

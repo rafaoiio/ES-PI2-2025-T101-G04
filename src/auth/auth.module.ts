@@ -1,5 +1,5 @@
+//Autor Rafael Gaudencio Dias
 //Descrição: Pasta criada para centralizar todo o sistema de login e autenticação, garantindo acesso seguro e controle de usuários no sistema.
-
 
 
 

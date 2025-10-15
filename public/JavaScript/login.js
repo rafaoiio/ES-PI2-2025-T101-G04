@@ -21,9 +21,9 @@ function show(el, text) {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = $('email').value.trim();
-  const password = $('senha').value;
+  const senha = $('senha').value;
 
-  if (!email || !password) return show(err, 'Informe e-mail e senha.');
+  if (!email || !senha) return show(err, 'Informe e-mail e senha.');
 
   btn.disabled = true; btn.textContent = 'Entrando...';
 
@@ -31,7 +31,7 @@ form.addEventListener('submit', async (e) => {
     const resp = await fetch(LOGIN_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password: senha })
     });
 
     if (!resp.ok) {

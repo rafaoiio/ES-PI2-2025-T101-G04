@@ -13,14 +13,14 @@ export class LocalStrategy extends PassportStrategy(Strategy)
   constructor(private auth: AuthService) 
   // Recebo o AuthService para usar a função que criei para validar o usuário
   {
-    super({ usernameField: 'email' });
+    super({ usernameField: 'email'});
     // digo aqui que o campo principal de login é o email
   }
 
-  async validate(email: string, password: string)
+  async validate(email: string, senha: string)
   // função chamada automaticamente quando o usuário tenta logar
   {
-    return this.auth.validaoUsuario(email, password);
+    return this.auth.validaoUsuario(email, senha);
     //uso a função validaoUsuario para verificar se usuário e senha estão certos
   }
 }
