@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Criar Conta - NotaDez</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="../JavaScript/cadastro.js" defer></script>
+  
 </head>
 <body>
   <div class="wrapper">
     <div class="logo">
-      <img src="assets/logo.png" alt="NotaDez">
+      <img src="/assets/logo.png" alt="NotaDez" />
       <h1>NotaDez</h1>
       <p>Sistema Profissional de Gestão de Notas</p>
     </div>
@@ -18,38 +20,42 @@
       <h2>Criar Conta</h2>
       <p class="subtitle">Criar uma nova conta de professor</p>
 
-      <form>
+      <form id="formCadastro">
         <label for="nome">Nome Completo</label>
         <div class="input-group">
           <span class="icon">👤</span>
-          <input type="text" id="nome" placeholder="Dr. João Silva" required>
+          <input type="text" id="nome" placeholder="Dr. João Silva" required />
         </div>
 
         <label for="email">E-mail</label>
         <div class="input-group">
           <span class="icon">📧</span>
-          <input type="email" id="email" placeholder="professor@universidade.edu.br" required>
+          <input type="email" id="email" placeholder="professor@universidade.edu.br" required />
         </div>
 
         <label for="telefone">Telefone</label>
         <div class="input-group">
           <span class="icon">📞</span>
-          <input type="tel" id="telefone" placeholder="+55 (11) 99999-9999">
+          <input type="tel" id="telefone" placeholder="+55 (11) 99999-9999" />
         </div>
 
         <label for="senha">Senha</label>
         <div class="input-group">
           <span class="icon">🔒</span>
-          <input type="password" id="senha" placeholder="••••••••" required>
+          <input type="password" id="senha" placeholder="••••••••" required minlength="6" />
         </div>
 
         <label for="confirmar">Confirmar Senha</label>
         <div class="input-group">
           <span class="icon">🔒</span>
-          <input type="password" id="confirmar" placeholder="••••••••" required>
+          <input type="password" id="confirmar" placeholder="••••••••" required minlength="6" />
         </div>
 
-        <button type="submit" class="btn">Criar Conta</button>
+        <button type="submit" class="btn" id="btnSubmit">Criar Conta</button>
+
+        <!-- mensagens -->
+        <div id="msgOk"   class="msg ok"   style="display:none;margin-top:10px;"></div>
+        <div id="msgErro" class="msg erro" style="display:none;margin-top:10px;"></div>
       </form>
 
       <div class="links">
@@ -58,7 +64,7 @@
     </div>
 
     <footer>
-      NotaDez - Gestão Profissional de Notas <br>
+      NotaDez - Gestão Profissional de Notas <br />
       © 2025 All rights reserved
     </footer>
   </div>

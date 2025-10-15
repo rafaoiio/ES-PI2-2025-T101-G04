@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - NotaDez</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="../JavaScript/login.js" defer></script>
 </head>
 <body>
   <div class="wrapper">
     <div class="logo">
-      <img src="assets/logo.png" alt="NotaDez">
+      <img src="/assets/logo.png" alt="NotaDez">
       <h1>NotaDez</h1>
       <p>Sistema Profissional de Gestão de Notas</p>
     </div>
@@ -18,20 +19,23 @@
       <h2>Entrar</h2>
       <p class="subtitle">Digite suas credenciais para acessar sua conta</p>
 
-      <form>
+      <form id="formLogin">
         <label for="email">E-mail</label>
         <div class="input-group">
           <span class="icon">📧</span>
-          <input type="email" id="email" placeholder="professor@universidade.edu.br" required>
+          <input type="email" id="email" placeholder="professor@universidade.edu.br" required/>
         </div>
 
         <label for="senha">Senha</label>
         <div class="input-group">
           <span class="icon">🔒</span>
-          <input type="password" id="senha" placeholder="••••••••" required>
+          <input type="password" id="senha" placeholder="••••••••" required />
         </div>
 
-        <button type="submit" class="btn">Entrar</button>
+        <button type="submit" class="btn" id="btnLogin">Entrar</button>
+
+        <div id="msgOk" class="msg ok" style="display:none;margin-top:10px;"></div>
+        <div id="msgErro" class="msg erro" style="display:none;margin-top:10px;"></div>
       </form>
 
       <div class="links">
@@ -40,10 +44,7 @@
       </div>
     </div>
 
-    <footer>
-      NotaDez - Gestão Profissional de Notas <br>
-      © 2025 All rights reserved
-    </footer>
+    <footer>NotaDez - Gestão Profissional de Notas<br/>© 2025 All rights reserved</footer>
   </div>
 </body>
 </html>
