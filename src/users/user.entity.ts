@@ -1,6 +1,6 @@
-//Autor Rafael Gaudencio Dias
-//Descrição: Entidade que representa a tabela de usuários, armazenando dados pessoais, senha criptografada, 
-// status ativo e datas de criação e atualização.
+//Autor: Rafael Gaudnecio Dias
+//Descrição: Entidade que representa a tabela de usuários, armazenando dados pessoais, senha criptografada,
+//  status ativo e datas de criação e atualização.
 
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
 
@@ -25,7 +25,7 @@ export class User {
   passwordHash: string;
   // coluna que guarda a senha, nunca é a senha real
 
-  @Column({type: 'varchar2', length: 30})
+  @Column({type: 'varchar2', length: 30,  nullable: true })
   phone?: string;
   // coluna phone
 
