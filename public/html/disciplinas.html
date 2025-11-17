@@ -1,0 +1,209 @@
+<!-- LUCAS -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Disciplinas - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/modal.css"/>
+  <link rel="stylesheet" href="/css/disciplinas.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/modal.js"></script>
+  <script src="/JavaScript/disciplinas.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3z"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link active" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Disciplinas</h1>
+        <p>Gerencie as disciplinas do sistema</p>
+      </div>
+      <button class="btn-primary" onclick="disciplinasManager.openCreateModal()">
+        <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nova Disciplina
+      </button>
+    </div>
+
+    <div class="card-modern">
+      <div class="table-wrapper">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>Sigla</th>
+              <th>Regra de Cálculo</th>
+              <th style="text-align: center; width: 200px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="disciplinasTable">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+                <p style="margin: 0;">Carregando disciplinas...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+
+  <!-- Modal de Disciplina -->
+  <div id="disciplinaModal" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>
+          <div class="modal-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          Nova Disciplina
+        </h2>
+        <button class="modal-close-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="disciplinaForm" class="modal-form">
+          <div class="modal-form-group">
+            <label class="modal-form-label" for="nome">
+              Nome da Disciplina
+              <span class="required">*</span>
+            </label>
+            <div class="modal-input-with-icon">
+              <div class="modal-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </div>
+              <input type="text" class="modal-form-input" id="nome" name="nome" placeholder="Ex: Matemática" required>
+            </div>
+            <div class="modal-form-error">Este campo é obrigatório</div>
+          </div>
+
+          <div class="modal-form-row">
+            <div class="modal-form-group">
+              <label class="modal-form-label" for="sigla">
+                Sigla
+              </label>
+              <input type="text" class="modal-form-input" id="sigla" name="sigla" placeholder="Ex: MAT">
+              <div class="modal-form-hint">Opcional - abreviação da disciplina</div>
+            </div>
+
+            <div class="modal-form-group">
+              <label class="modal-form-label" for="regra">
+                Regra de Cálculo
+                <span class="required">*</span>
+              </label>
+              <select class="modal-form-select" id="regra" name="regra" required>
+                <option value="SIMPLES">SIMPLES (Média Aritmética)</option>
+                <option value="PONDERADA">PONDERADA (Com Pesos)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-form-group" id="pesosContainer" style="display: none;">
+            <label class="modal-form-label" for="pesosJson">
+              Configuração de Pesos (JSON)
+            </label>
+            <textarea class="modal-form-textarea" id="pesosJson" name="pesosJson" rows="4" placeholder='{"P1": 0.4, "P2": 0.3, "P3": 0.3}'></textarea>
+            <div class="modal-form-hint">Exemplo: {"P1": 0.4, "P2": 0.3, "P3": 0.3} - A soma deve ser 1.0</div>
+          </div>
+
+          <input type="hidden" id="idDisciplina" name="idDisciplina">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-btn modal-btn-cancel">Cancelar</button>
+        <button type="button" class="modal-btn modal-btn-submit" onclick="disciplinasManager.submitForm()">
+          <span class="btn-text">Salvar</span>
+          <div class="modal-btn-spinner" style="display: none;"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação de Exclusão -->
+  <div id="deleteConfirmModal" class="modal-overlay hidden">
+    <div class="modal-container" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>
+          <div class="modal-header-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </div>
+          Confirmar Exclusão
+        </h2>
+        <button class="modal-close-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; padding: 1rem 0;">
+          <div style="width: 4rem; height: 4rem; margin: 0 auto 1.5rem; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 2rem; height: 2rem; color: var(--error);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: var(--font-bold); color: var(--gray-900); margin: 0 0 0.75rem;">Tem certeza que deseja excluir?</h3>
+          <p style="font-size: 1rem; color: var(--gray-600); margin: 0 0 0.5rem;">
+            A disciplina <strong id="deleteNomeText" style="color: var(--gray-900);"></strong> será permanentemente removida.
+          </p>
+          <p style="font-size: 0.875rem; color: var(--error); font-weight: var(--font-semibold); margin: 0;">
+            Esta ação não pode ser desfeita.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-btn modal-btn-cancel">Cancelar</button>
+        <button type="button" class="modal-btn modal-btn-submit" onclick="disciplinasManager.deleteDisciplina()" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+          <span class="btn-text">Sim, Excluir</span>
+          <div class="modal-btn-spinner" style="display: none;"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
