@@ -1,0 +1,416 @@
+<!-- LAURA -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meu Perfil - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/perfil.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/perfil.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link active" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Meu Perfil</h1>
+        <p>Gerencie suas informações pessoais e visualize suas estatísticas</p>
+      </div>
+    </div>
+
+    <!-- Dashboard de Perfil -->
+    <div class="profile-dashboard">
+      <!-- Card Principal do Perfil -->
+      <div class="profile-card-main">
+        <div class="profile-cover">
+          <div class="cover-pattern"></div>
+        </div>
+        <div class="profile-content-wrapper">
+          <div class="profile-header-flex">
+            <div class="profile-avatar-section">
+              <div class="profile-avatar-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="profile-status-indicator"></div>
+            </div>
+            <div class="profile-info-section">
+              <h2 id="profileName">Carregando...</h2>
+              <p id="profileEmail" class="profile-email-text">carregando@email.com</p>
+              <div class="profile-badges">
+                <span class="profile-badge-primary">
+                  <svg style="width: 0.875rem; height: 0.875rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                  </svg>
+                  Professor
+                </span>
+                <span class="profile-badge-secondary">
+                  <svg style="width: 0.875rem; height: 0.875rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  Desde <span id="profileSince">2025</span>
+                </span>
+              </div>
+            </div>
+            <div class="profile-actions-section">
+              <button class="btn-edit-profile-main" id="editProfileBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span>Editar Perfil</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Estatísticas -->
+      <div class="stats-grid-profile">
+        <div class="stat-card-profile stat-card-blue">
+          <div class="stat-icon-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="stat-info-profile">
+            <h3 id="statDisciplinas">0</h3>
+            <p>Disciplinas</p>
+            <span class="stat-trend">Ativas</span>
+          </div>
+        </div>
+
+        <div class="stat-card-profile stat-card-green">
+          <div class="stat-icon-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="stat-info-profile">
+            <h3 id="statTurmas">0</h3>
+            <p>Turmas</p>
+            <span class="stat-trend">Sob sua responsabilidade</span>
+          </div>
+        </div>
+
+        <div class="stat-card-profile stat-card-purple">
+          <div class="stat-icon-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="stat-info-profile">
+            <h3 id="statAlunos">0</h3>
+            <p>Alunos</p>
+            <span class="stat-trend">Total matriculados</span>
+          </div>
+        </div>
+
+        <div class="stat-card-profile stat-card-orange">
+          <div class="stat-icon-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+            </svg>
+          </div>
+          <div class="stat-info-profile">
+            <h3 id="statComponentes">0</h3>
+            <p>Componentes</p>
+            <span class="stat-trend">Avaliativos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout em duas colunas -->
+      <div class="profile-two-columns">
+        <!-- Coluna Esquerda -->
+        <div class="profile-column-left">
+          <!-- Progresso de Lançamento de Notas -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Progresso de Avaliações
+              </h3>
+            </div>
+            <div class="progress-section">
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">Notas Lançadas</span>
+                  <span class="progress-value" id="progressNotasValue">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="progressNotasBar" style="width: 0%"></div>
+                </div>
+                <p class="progress-subtitle"><span id="notasLancadas">0</span> de <span id="notasTotal">0</span> avaliações concluídas</p>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Gráfico de Distribuição de Notas -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                Distribuição de Médias
+              </h3>
+            </div>
+            <div class="chart-container">
+              <div class="chart-bars" id="distributionChart">
+                <div class="chart-bar-item" data-faixa="0-4">
+                  <div class="chart-bar-wrapper">
+                    <div class="chart-bar" style="height: 0%;" data-value="0">
+                      <span class="chart-bar-label">0</span>
+                    </div>
+                  </div>
+                  <span class="chart-bar-title">0-4</span>
+                </div>
+                <div class="chart-bar-item" data-faixa="5-6">
+                  <div class="chart-bar-wrapper">
+                    <div class="chart-bar" style="height: 0%;" data-value="0">
+                      <span class="chart-bar-label">0</span>
+                    </div>
+                  </div>
+                  <span class="chart-bar-title">5-6</span>
+                </div>
+                <div class="chart-bar-item" data-faixa="7-8">
+                  <div class="chart-bar-wrapper">
+                    <div class="chart-bar" style="height: 0%;" data-value="0">
+                      <span class="chart-bar-label">0</span>
+                    </div>
+                  </div>
+                  <span class="chart-bar-title">7-8</span>
+                </div>
+                <div class="chart-bar-item" data-faixa="9-10">
+                  <div class="chart-bar-wrapper">
+                    <div class="chart-bar" style="height: 0%;" data-value="0">
+                      <span class="chart-bar-label">0</span>
+                    </div>
+                  </div>
+                  <span class="chart-bar-title">9-10</span>
+                </div>
+              </div>
+              <p class="chart-subtitle" id="chartSubtitle">Carregando distribuição de notas...</p>
+            </div>
+          </div>
+
+          <!-- Informações de Contato -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                Informações de Contato
+              </h3>
+            </div>
+            <div class="contact-info">
+              <div class="contact-item">
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <div>
+                  <h4>E-mail</h4>
+                  <p id="contactEmail">-</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <div>
+                  <h4>Telefone</h4>
+                  <p id="contactPhone">Não informado</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita -->
+        <div class="profile-column-right">
+          <!-- Desempenho Geral -->
+          <div class="profile-card performance-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M2 12h20"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                Desempenho Geral
+              </h3>
+            </div>
+            <div class="performance-content">
+              <div class="performance-circle">
+                <svg viewBox="0 0 120 120" class="circular-chart">
+                  <circle class="circle-bg" cx="60" cy="60" r="54"/>
+                  <circle class="circle-progress" id="performanceCircle" cx="60" cy="60" r="54" style="stroke-dasharray: 0, 339;"/>
+                </svg>
+                <div class="performance-center">
+                  <span class="performance-value" id="performanceValue">0%</span>
+                  <span class="performance-label">Completo</span>
+                </div>
+              </div>
+              <div class="performance-stats">
+                <div class="performance-stat-item">
+                  <div class="stat-indicator" style="background: var(--primary-600);"></div>
+                  <span>Notas Lançadas</span>
+                  <strong id="performanceNotas">0%</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Atividade Recente -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Atividade Recente
+              </h3>
+            </div>
+            <div class="activity-timeline" id="activityTimeline">
+              <div class="activity-empty" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                <p>Carregando atividades recentes...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card de Segurança -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3>
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Segurança
+              </h3>
+            </div>
+            <div class="security-info">
+              <div class="security-item">
+                <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <circle cx="12" cy="16" r="1"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <div>
+                  <h4>Senha</h4>
+                  <p>Protege sua conta com senha forte</p>
+                </div>
+                <button class="btn-security" onclick="document.getElementById('editProfileBtn').click();">
+                  Alterar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário de Edição -->
+      <div class="profile-edit-card hidden" id="editFormCard">
+        <div class="card-header">
+          <h3>Editar Informações</h3>
+          <button class="btn-close" id="closeEditBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <form id="profileForm" class="profile-form">
+          <div class="form-group">
+            <label for="editNome">Nome Completo *</label>
+            <input type="text" id="editNome" name="nome" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editEmail">E-mail *</label>
+            <input type="email" id="editEmail" name="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editTelefone">Telefone</label>
+            <input type="tel" id="editTelefone" name="telefone" placeholder="(00) 00000-0000">
+          </div>
+
+          <div class="form-group">
+            <label for="editSenha">Nova Senha</label>
+            <input type="password" id="editSenha" name="senha" placeholder="Deixe em branco para não alterar" autocomplete="new-password">
+            <small>Mínimo de 6 caracteres. Deixe em branco se não quiser alterar.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="editSenhaConfirm">Confirmar Nova Senha</label>
+            <input type="password" id="editSenhaConfirm" name="senhaConfirm" placeholder="Confirme a nova senha" autocomplete="new-password">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="cancelEditBtn">Cancelar</button>
+            <button type="submit" class="btn-primary" id="saveProfileBtn">
+              <span class="btn-text">Salvar Alterações</span>
+              <div class="btn-spinner hidden"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+</body>
+</html>
