@@ -1,139 +1,216 @@
-# 📘 Projeto NotaDez – Projeto Integrador 2 (2025)
+# NotaDez - Sistema de Gestão de Notas
 
-## 🧩 Descrição Geral
+Sistema completo de gestão de notas acadêmicas com frontend HTML+Bootstrap+TypeScript e backend NestJS+TypeORM+Oracle.
 
-O **NotaDez** é um sistema web desenvolvido como parte do **Projeto Integrador 2 (PI2)** do curso de **Engenharia de Software – PUC-Campinas (2025)**.
+## Estrutura do Projeto
 
-O objetivo principal é oferecer aos docentes uma plataforma moderna, intuitiva e segura para **gestão de notas e turmas**, permitindo:
+### Backend (NestJS + TypeORM + Oracle)
+- **Módulos implementados:**
+  - `auth` - Autenticação (mock retornando token fake)
+  - `dashboard` - Métricas e estatísticas
+  - `disciplina` - Gerenciamento de disciplinas
+  - `componente` - Componentes de nota (P1, P2, etc.)
+  - `turma` - Gerenciamento de turmas
+  - `aluno` - Gerenciamento de alunos
+  - `matricula` - Matrículas de alunos em turmas
+  - `lancamento` - Lançamento de notas
+  - `notas-finais` - Cálculo de notas finais (SIMPLES e PONDERADA)
+  - `exportacao` - Exportação de notas em CSV
 
-* 👩‍🏫 Cadastro e gerenciamento de **instituições, disciplinas e turmas**;
-* 📥 Importação e exportação de **alunos** via **CSV** ou **JSON**;
-* 🧮 Criação e lançamento de **componentes de nota** (provas, trabalhos, etc.);
-* ➗ **Cálculo automático da nota final**, com base em expressões matemáticas personalizadas;
-* ✏️ **Ajuste manual** de notas finais com arredondamento automático;
-* 🧾 **Painel de auditoria** que registra todas as alterações feitas nas notas;
-* 💾 **Exportação** de resultados em formato **CSV** ou **JSON**.
+### Frontend (HTML + Bootstrap + JavaScript)
+- **Páginas implementadas:**
+  - `index.html` - Dashboard principal
+  - `login.html` - Login
+  - `disciplinas.html` - Listagem de disciplinas
+  - `disciplina_form.html` - Formulário de disciplina
+  - `componentes.html` - Listagem de componentes
+  - `componente_form.html` - Formulário de componente
+  - `turmas.html` - Listagem de turmas
+  - `turma_form.html` - Formulário de turma
+  - Utilitários: `env.js`, `api.js`, `utils.js`
 
----
+## Configuração e Execução
 
-## 👥 Equipe de Desenvolvimento
+### Pré-requisitos
+- Node.js (v18+)
+- Oracle Database
+- npm ou yarn
 
-| Nome                                 | Função                  |
-| ------------------------------------ | ----------------------- |
-| **Laura Cristine Soares**            | Desenvolvedora Frontend |
-| **Lucas David de Souza**             | Desenvolvedor Backend   |
-| **Pedro Henrique Medeiros dos Reis** | Desenvolvedor Backend   |
-| **Rafael Gaudencio Dias**            | Desenvolvedor Fullstack |
-| **Vitor Hugo Gilbert**               | Designer e Documentação |
+### Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto:
 
----
+```env
+ORACLE_USER=seu_usuario
+ORACLE_PASSWORD=sua_senha
+ORACLE_HOST=localhost
+ORACLE_PORT=1521
+ORACLE_SERVICE=XE
+# OU use ORACLE_CONNECT_STRING diretamente:
+# ORACLE_CONNECT_STRING=localhost:1521/XE
 
-## 🛠️ Tecnologias Utilizadas
-
-* ⚙️ **Backend:** Node.js (LTS) + TypeScript + Express + NestJS
-* 🎨 **Frontend:** HTML5, CSS3, Bootstrap
-* 🗄️ **Banco de Dados:** MySQL / PostgreSQL
-* 💻 **IDE:** Visual Studio Code / JetBrains WebStorm
-* 🌳 **Versionamento:** Git + GitHub
-* 📋 **Gestão:** GitHub Projects (Kanban)
-
----
-
-## 📂 Estrutura do Projeto
-
+JWT_SECRET=sua_chave_secreta_jwt
+JWT_EXPIRES=1d
+NODE_ENV=development
 ```
-/backend        → Código do servidor (API, controladores, rotas)
-/frontend       → Interface web (HTML, CSS, Bootstrap)
-/database       → Scripts SQL e modelos ER
-/docs           → Documentos de apoio (escopo, diagramas, atas)
-/README.md      → Documento descritivo do projeto
-```
 
----
-
-## 🚀 Como Rodar o Projeto
-
-### 1️⃣ Clonar o repositório
+### Instalação
 
 ```bash
-git clone https://github.com/SEU-GRUPO/ES-PI2-2025-T101-G04.git
-cd ES-PI2-2025-T101-G04
-```
-
-### 2️⃣ Instalar as dependências do backend
-
-```bash
-cd backend
 npm install
-npm install express @types/express
 ```
 
-> ⚠️ Esses pacotes são obrigatórios para o uso do decorador `@Res()` no NestJS (envio de arquivos HTML).
+### Executar o Banco de Dados
+Execute os scripts SQL em `banco.sql/Codigos SQLs.sql` para criar as tabelas.
 
-### 3️⃣ Executar o servidor
+Execute também o script da trigger de auditoria:
+```bash
+# No Oracle SQL Developer ou similar
+@banco.sql/trigger_auditoria_nota.sql
+```
 
+### Executar o Backend
+
+```bash
+# Desenvolvimento
+npm run start:dev
+
+# Produção
+npm run build
+npm run start:prod
+```
+
+O backend estará disponível em `http://localhost:3000`
+
+### Acessar o Frontend
+Abra `http://localhost:3000` no navegador.
+
+## Funcionalidades Implementadas
+
+### 1. Autenticação
+- Login mock retornando token fake
+- Token salvo no localStorage
+
+### 2. Dashboard
+- Métricas: contadores de disciplinas, turmas, componentes e alunos
+- Atalhos rápidos
+
+### 3. Disciplinas
+- Listagem de disciplinas
+- Criação/edição de disciplinas
+- Configuração de regra de cálculo (SIMPLES ou PONDERADA)
+- Suporte a pesos JSON para cálculo ponderado
+
+### 4. Componentes de Nota
+- Listagem por disciplina
+- Criação/edição de componentes
+- Validação de sigla única por disciplina
+- Exclusão (bloqueada se houver notas)
+
+### 5. Turmas
+- Listagem com filtro por disciplina
+- Criação/edição de turmas
+- Overview com pendências de notas
+
+### 6. Alunos e Matrículas
+- Criação de alunos (upsert por RA)
+- Vinculação de alunos a turmas
+- Listagem de alunos por turma
+
+### 7. Lançamento de Notas
+- Grid de lançamento por componente
+- Validação de notas (0.00 a 10.00)
+- Formatação com 2 casas decimais
+
+### 8. Notas Finais
+- Cálculo SIMPLES (média aritmética)
+- Cálculo PONDERADA (com pesos JSON)
+- Exibição de notas por componente e nota final
+
+### 9. Exportação CSV
+- Exportação de notas finais
+- Validação de pendências antes de exportar
+- Formato: `YYYY-MM-DD_HHmmss-<TURMA>-<SIGLA>.csv`
+
+### 10. Auditoria
+- Trigger Oracle que registra todas as alterações em NOTA
+- Gravação automática em AUDITORIA_NOTA
+
+## Endpoints da API
+
+### Auth
+- `POST /auth/login` - Login (retorna token mock)
+
+### Dashboard
+- `GET /dashboard/metrics` - Métricas do sistema
+
+### Disciplinas
+- `GET /disciplinas` - Listar todas
+- `GET /disciplinas/:id` - Buscar por ID
+- `POST /disciplinas` - Criar
+- `PATCH /disciplinas/:id` - Atualizar
+
+### Componentes
+- `GET /componentes/disciplinas/:discId` - Listar por disciplina
+- `GET /componentes/:id` - Buscar por ID
+- `POST /componentes` - Criar
+- `PATCH /componentes/:id` - Atualizar
+- `DELETE /componentes/:id` - Excluir (409 se houver notas)
+
+### Turmas
+- `GET /turmas?disciplinaId?` - Listar (com filtro opcional)
+- `GET /turmas/:id` - Buscar por ID
+- `GET /turmas/:id/overview` - Overview com pendências
+- `GET /turmas/:id/componentes` - Componentes com pendências
+- `POST /turmas` - Criar
+- `PATCH /turmas/:id` - Atualizar
+
+### Alunos
+- `GET /alunos` - Listar todos
+- `GET /alunos/:ra` - Buscar por RA
+- `POST /alunos` - Criar/atualizar (upsert)
+
+### Matrículas
+- `GET /matriculas/turmas/:turmaId` - Listar por turma
+- `POST /matriculas` - Criar (409 se já existir)
+- `DELETE /matriculas/:id` - Remover
+
+### Lançamentos
+- `GET /lancamentos/:turmaId/:componenteId` - Grid de notas
+- `PATCH /lancamentos/:matriculaId/:componenteId` - Atualizar nota
+
+### Notas Finais
+- `GET /notas-finais/:discId/:turmaId` - Calcular notas finais
+
+### Exportação
+- `GET /exportacao/:discId/:turmaId/csv` - Exportar CSV (409 se houver pendências)
+
+## Regras de Negócio
+
+1. **Notas**: Aceitas de 0.00 a 10.00 (duas casas decimais)
+2. **Sigla de Componente**: Única por disciplina
+3. **Matrícula**: Um aluno não pode estar matriculado duas vezes na mesma turma
+4. **Exclusão de Componente**: Bloqueada se houver notas lançadas
+5. **Cálculo SIMPLES**: Média aritmética de todos os componentes
+6. **Cálculo PONDERADA**: Soma ponderada usando pesos JSON da disciplina
+7. **Nota Final**: Null se faltar qualquer nota de qualquer componente
+8. **Exportação**: Bloqueada se houver pendências
+
+## Observações
+
+- O sistema não altera nenhuma tabela SQL existente
+- A trigger de auditoria deve ser executada manualmente no banco
+- O login é mock e sempre retorna sucesso com token fake
+- Todas as validações estão implementadas no backend e frontend
+
+## Desenvolvimento
+
+Para desenvolvimento, use:
 ```bash
 npm run start:dev
 ```
 
-### 4️⃣ Banco de Dados
+O servidor recarrega automaticamente ao detectar mudanças.
 
-* Execute os scripts SQL da pasta `/database`.
-* Configure as credenciais no arquivo `.env` do backend.
+## Licença
 
-### 5️⃣ Abrir o frontend
-
-Abra os arquivos da pasta `/public` diretamente no navegador ou sirva-os via servidor local.
-
----
-
-## 🧪 Funcionalidades Implementadas
-
-* [x] 🔑 Autenticação (login, cadastro e recuperação de senha);
-* [x] 🏫 Cadastro e gerenciamento de instituições, disciplinas e turmas;
-* [x] 📥 Importação de alunos (CSV/JSON);
-* [x] 📝 Cadastro e lançamento de notas;
-* [x] 📊 Painel de auditoria (log de alterações);
-* [x] ➗ Cálculo automático da nota final (expressões matemáticas);
-* [x] ✏️ Coluna de notas ajustadas (arredondamento e correção manual);
-* [x] 📤 Exportação de notas (CSV/JSON).
-
----
-
-## 📌 Organização e Controle
-
-* **Commits:** feitos em branches de funcionalidade (`feature/...`).
-* **Integração:** merge na branch `dev` após revisão.
-* **Entrega final:** branch `main` com tag `1.0.0-final`.
-* **Gestão:** GitHub Projects (To Do / In Progress / Review / Done).
-
----
-
-## 🧾 Boas Práticas e Padrões
-
-* Cada arquivo possui cabeçalho com **autor, descrição e data**, conforme as regras do PI2.
-* Exemplo de cabeçalho:
-
-  ```ts
-  // Autor: Nome do Aluno
-  // Descrição: adicionei uma função X
-  // Data: 07/10/2025
-  ```
-* Comentários explicativos foram incluídos ao longo do código conforme a norma do Projeto Integrador.
-
----
-
-## 📅 Status Atual
-
-| Etapa                             | Situação               |
-| --------------------------------- | ---------------------- |
-| Repositório no GitHub             | ✅ Concluído            |
-| Modelagem do Banco de Dados (DER) | ✅ Concluído            |
-| Protótipo no Figma                | ✅ Concluído            |
-| Backend (NestJS + Express)        | ⬜ Em desenvolvimento   |
-| Frontend (HTML/CSS/Bootstrap)     | ⬜ Em desenvolvimento   |
-| Integração e Testes               | ⬜ Pendente             |
-| Versão Final para Banca           | ⬜ Aguardando conclusão |
-
----
-
+UNLICENSED
