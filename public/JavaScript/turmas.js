@@ -283,10 +283,14 @@ class TurmasManager {
     }
   }
 
+
+
   verDetalhes(id) {
     window.location.href = `/turma_hub.html?id=${id}`;
   }
 }
+
+
 
 let turmasManager;
 
