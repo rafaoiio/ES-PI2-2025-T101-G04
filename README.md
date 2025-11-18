@@ -1,42 +1,78 @@
-# NotaDez - Sistema de Gestão de Notas
+# NotaDez – Sistema de Gestão Acadêmica
 
-Sistema completo de gestão de notas acadêmicas com frontend HTML+Bootstrap+TypeScript e backend NestJS+TypeORM+Oracle.
+## Sobre o Projeto
+
+O **NotaDez** é um sistema web completo desenvolvido como parte do **Projeto Integrador 2 (PI2)** do curso de **Engenharia de Software** da **Pontifícia Universidade Católica de Campinas (PUC-Campinas)**, turma T101-G04, no ano de 2025.
+
+O sistema oferece uma plataforma moderna e segura para gestão acadêmica, permitindo aos docentes o controle completo do processo avaliativo através de funcionalidades como cadastro de instituições, cursos, disciplinas e turmas; importação e exportação de dados; lançamento e cálculo automático de notas; e auditoria completa de alterações.
+
+## Objetivo
+
+Automatizar e facilitar a gestão acadêmica através de um sistema integrado que permite gestão completa de instituições, cursos, disciplinas e turmas; importação e exportação de alunos via CSV/JSON; criação e configuração de componentes de avaliação; lançamento de notas com validação automática; cálculo automático de notas finais (média simples ou ponderada); ajuste manual de notas finais; sistema de auditoria para rastreamento de alterações; e dashboard com métricas e estatísticas em tempo real.
+
+## Contexto Acadêmico
+
+Este projeto é desenvolvido como requisito obrigatório do **Projeto Integrador 2**, disciplina do curso de Engenharia de Software da PUC-Campinas, que visa integrar conhecimentos adquiridos ao longo do curso através do desenvolvimento de um sistema completo, desde a modelagem até a implementação e testes.
+
+## Tecnologias Utilizadas
+
+### Backend
+
+- **Node.js** (LTS) com **TypeScript 5.7.3**
+- **NestJS 11.1.6** - Framework Node.js progressivo
+- **TypeORM 0.3.27** - ORM para gerenciamento de banco de dados
+- **Oracle Database** - Sistema de gerenciamento de banco de dados relacional
+- **Passport.js** - Autenticação com estratégias JWT e Local
+- **class-validator** e **class-transformer** - Validação e transformação de dados
+- **bcrypt** - Criptografia de senhas
+- **Multer** - Upload de arquivos
+
+### Frontend
+
+- **HTML5**, **CSS3**, **JavaScript (ES6+)**
+- **Bootstrap 5** - Framework CSS responsivo
+- Design System customizado baseado em protótipo Figma
+
+### Ferramentas de Desenvolvimento
+
+- **Git** + **GitHub** - Controle de versão e gestão de tarefas (Kanban)
+- **ESLint** + **Prettier** - Padronização de código
+- **Jest** - Framework de testes
 
 ## Estrutura do Projeto
 
-### Backend (NestJS + TypeORM + Oracle)
-- **Módulos implementados:**
-  - `auth` - Autenticação (mock retornando token fake)
-  - `dashboard` - Métricas e estatísticas
-  - `disciplina` - Gerenciamento de disciplinas
-  - `componente` - Componentes de nota (P1, P2, etc.)
-  - `turma` - Gerenciamento de turmas
-  - `aluno` - Gerenciamento de alunos
-  - `matricula` - Matrículas de alunos em turmas
-  - `lancamento` - Lançamento de notas
-  - `notas-finais` - Cálculo de notas finais (SIMPLES e PONDERADA)
-  - `exportacao` - Exportação de notas em CSV
+```text
+/src          → Backend NestJS (aluno, auth, auditoria, componente, curso, dashboard,
+                disciplina, entities, exportacao, instituicao, lancamento, matricula,
+                notas-finais, turma, users)
+/public       → Frontend estático (HTML, CSS, JavaScript)
+/banco.sql    → Scripts SQL e modelos de banco de dados
+```
 
-### Frontend (HTML + Bootstrap + JavaScript)
-- **Páginas implementadas:**
-  - `index.html` - Dashboard principal
-  - `login.html` - Login
-  - `disciplinas.html` - Listagem de disciplinas
-  - `disciplina_form.html` - Formulário de disciplina
-  - `componentes.html` - Listagem de componentes
-  - `componente_form.html` - Formulário de componente
-  - `turmas.html` - Listagem de turmas
-  - `turma_form.html` - Formulário de turma
-  - Utilitários: `env.js`, `api.js`, `utils.js`
+## Pré-requisitos
 
-## Configuração e Execução
+- **Node.js** v18 ou superior
+- **Oracle Database** (XE ou superior)
+- **npm** ou **yarn**
+- **Git**
 
-### Pré-requisitos
-- Node.js (v18+)
-- Oracle Database
-- npm ou yarn
+## Instalação e Execução
 
-### Variáveis de Ambiente
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/SEU-GRUPO/ES-PI2-2025-T101-G04.git
+cd ES-PI2-2025-T101-G04
+```
+
+### 2. Instalar dependências
+
+```bash
+npm install
+```
+
+### 3. Configurar variáveis de ambiente
+
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
@@ -45,172 +81,72 @@ ORACLE_PASSWORD=sua_senha
 ORACLE_HOST=localhost
 ORACLE_PORT=1521
 ORACLE_SERVICE=XE
-# OU use ORACLE_CONNECT_STRING diretamente:
-# ORACLE_CONNECT_STRING=localhost:1521/XE
-
 JWT_SECRET=sua_chave_secreta_jwt
 JWT_EXPIRES=1d
 NODE_ENV=development
+PORT=3000
 ```
 
-### Instalação
+### 4. Configurar o banco de dados
+
+Execute os scripts SQL em `banco.sql/` (`Codigos SQLs.sql` e `trigger_auditoria_nota.sql`).
+
+### 5. Executar o servidor
 
 ```bash
-npm install
-```
-
-### Executar o Banco de Dados
-Execute os scripts SQL em `banco.sql/Codigos SQLs.sql` para criar as tabelas.
-
-Execute também o script da trigger de auditoria:
-```bash
-# No Oracle SQL Developer ou similar
-@banco.sql/trigger_auditoria_nota.sql
-```
-
-### Executar o Backend
-
-```bash
-# Desenvolvimento
 npm run start:dev
-
-# Produção
-npm run build
-npm run start:prod
 ```
 
-O backend estará disponível em `http://localhost:3000`
+O sistema estará disponível em `http://localhost:3000`
 
-### Acessar o Frontend
-Abra `http://localhost:3000` no navegador.
+## Funcionalidades Principais
 
-## Funcionalidades Implementadas
-
-### 1. Autenticação
-- Login mock retornando token fake
-- Token salvo no localStorage
-
-### 2. Dashboard
-- Métricas: contadores de disciplinas, turmas, componentes e alunos
-- Atalhos rápidos
-
-### 3. Disciplinas
-- Listagem de disciplinas
-- Criação/edição de disciplinas
-- Configuração de regra de cálculo (SIMPLES ou PONDERADA)
-- Suporte a pesos JSON para cálculo ponderado
-
-### 4. Componentes de Nota
-- Listagem por disciplina
-- Criação/edição de componentes
-- Validação de sigla única por disciplina
-- Exclusão (bloqueada se houver notas)
-
-### 5. Turmas
-- Listagem com filtro por disciplina
-- Criação/edição de turmas
-- Overview com pendências de notas
-
-### 6. Alunos e Matrículas
-- Criação de alunos (upsert por RA)
-- Vinculação de alunos a turmas
-- Listagem de alunos por turma
-
-### 7. Lançamento de Notas
-- Grid de lançamento por componente
-- Validação de notas (0.00 a 10.00)
-- Formatação com 2 casas decimais
-
-### 8. Notas Finais
-- Cálculo SIMPLES (média aritmética)
-- Cálculo PONDERADA (com pesos JSON)
-- Exibição de notas por componente e nota final
-
-### 9. Exportação CSV
-- Exportação de notas finais
-- Validação de pendências antes de exportar
-- Formato: `YYYY-MM-DD_HHmmss-<TURMA>-<SIGLA>.csv`
-
-### 10. Auditoria
-- Trigger Oracle que registra todas as alterações em NOTA
-- Gravação automática em AUDITORIA_NOTA
-
-## Endpoints da API
-
-### Auth
-- `POST /auth/login` - Login (retorna token mock)
-
-### Dashboard
-- `GET /dashboard/metrics` - Métricas do sistema
-
-### Disciplinas
-- `GET /disciplinas` - Listar todas
-- `GET /disciplinas/:id` - Buscar por ID
-- `POST /disciplinas` - Criar
-- `PATCH /disciplinas/:id` - Atualizar
-
-### Componentes
-- `GET /componentes/disciplinas/:discId` - Listar por disciplina
-- `GET /componentes/:id` - Buscar por ID
-- `POST /componentes` - Criar
-- `PATCH /componentes/:id` - Atualizar
-- `DELETE /componentes/:id` - Excluir (409 se houver notas)
-
-### Turmas
-- `GET /turmas?disciplinaId?` - Listar (com filtro opcional)
-- `GET /turmas/:id` - Buscar por ID
-- `GET /turmas/:id/overview` - Overview com pendências
-- `GET /turmas/:id/componentes` - Componentes com pendências
-- `POST /turmas` - Criar
-- `PATCH /turmas/:id` - Atualizar
-
-### Alunos
-- `GET /alunos` - Listar todos
-- `GET /alunos/:ra` - Buscar por RA
-- `POST /alunos` - Criar/atualizar (upsert)
-
-### Matrículas
-- `GET /matriculas/turmas/:turmaId` - Listar por turma
-- `POST /matriculas` - Criar (409 se já existir)
-- `DELETE /matriculas/:id` - Remover
-
-### Lançamentos
-- `GET /lancamentos/:turmaId/:componenteId` - Grid de notas
-- `PATCH /lancamentos/:matriculaId/:componenteId` - Atualizar nota
-
-### Notas Finais
-- `GET /notas-finais/:discId/:turmaId` - Calcular notas finais
-
-### Exportação
-- `GET /exportacao/:discId/:turmaId/csv` - Exportar CSV (409 se houver pendências)
+- **Autenticação**: Login com JWT, recuperação de senha, controle de sessão
+- **Gestão Acadêmica**: CRUD completo de instituições, cursos, disciplinas, turmas e alunos
+- **Importação/Exportação**: Suporte a CSV e JSON para alunos e resultados
+- **Componentes de Avaliação**: Criação e configuração de componentes com pesos e tipos
+- **Lançamento de Notas**: Interface em grid com validação (0.00 a 10.00)
+- **Cálculo Automático**: Média simples ou ponderada conforme configuração
+- **Ajuste Manual**: Permissão para ajuste de notas finais com justificativa
+- **Auditoria**: Rastreamento automático de todas as alterações em notas
+- **Dashboard**: Métricas e estatísticas em tempo real do sistema
 
 ## Regras de Negócio
 
-1. **Notas**: Aceitas de 0.00 a 10.00 (duas casas decimais)
-2. **Sigla de Componente**: Única por disciplina
-3. **Matrícula**: Um aluno não pode estar matriculado duas vezes na mesma turma
-4. **Exclusão de Componente**: Bloqueada se houver notas lançadas
-5. **Cálculo SIMPLES**: Média aritmética de todos os componentes
-6. **Cálculo PONDERADA**: Soma ponderada usando pesos JSON da disciplina
-7. **Nota Final**: Null se faltar qualquer nota de qualquer componente
-8. **Exportação**: Bloqueada se houver pendências
+- Notas devem estar entre 0.00 e 10.00 (duas casas decimais)
+- Sigla de componente deve ser única por disciplina
+- Nota final permanece `null` se faltar nota obrigatória
+- Exportação bloqueada quando há pendências de lançamento
+- Todas as alterações de notas são registradas automaticamente na auditoria
 
-## Observações
+## Status do Projeto
 
-- O sistema não altera nenhuma tabela SQL existente
-- A trigger de auditoria deve ser executada manualmente no banco
-- O login é mock e sempre retorna sucesso com token fake
-- Todas as validações estão implementadas no backend e frontend
+| Etapa | Status |
+|-------|--------|
+| Repositório e Versionamento | ✅ Concluído |
+| Modelagem do Banco de Dados (DER) | ✅ Concluído |
+| Protótipo no Figma | ✅ Concluído |
+| Backend (NestJS + TypeORM) | ✅ Implementado |
+| Frontend (HTML/CSS/JavaScript) | ✅ Implementado |
+| Integração Backend/Frontend | ✅ Em andamento |
+| Testes Automatizados | 🔄 Em desenvolvimento |
+| Documentação Final | 🔄 Em andamento |
+| Versão para Apresentação | ⏳ Aguardando |
 
-## Desenvolvimento
+## Equipe de Desenvolvimento
 
-Para desenvolvimento, use:
-```bash
-npm run start:dev
-```
+| Nome | Função |
+|------|--------|
+| **Laura Cristine Soares** | Engenharia de Software |
+| **Lucas David de Souza** | Engenharia de Software |
+| **Pedro Henrique Medeiros dos Reis** | Engenharia de Software |
+| **Rafael Gaudencio Dias** | Engenharia de Software |
+| **Vitor Hugo Gilbert** | Engenharia de Software |
 
-O servidor recarrega automaticamente ao detectar mudanças.
+## Organização do Desenvolvimento
+
+Versionamento em branches `feature/...` com merge na `dev`, gestão de tarefas via GitHub Projects (Kanban), padrões de código com ESLint e Prettier, e cabeçalhos de arquivo conforme normas do PI2.
 
 ## Licença
 
-UNLICENSED
+Este projeto é desenvolvido exclusivamente para fins acadêmicos como parte do Projeto Integrador 2 (PI2) do curso de Engenharia de Software da PUC-Campinas. UNLICENSED
