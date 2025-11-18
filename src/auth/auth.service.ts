@@ -56,7 +56,9 @@ export class AuthService {
     const user = await this.users.findByEmail(email);
     if (!user) {
       // Por segurança, não revela se o email existe ou não
-      return { message: 'Se o email existir, um link de recuperação será enviado.' };
+      return {
+        message: 'Se o email existir, um link de recuperação será enviado.',
+      };
     }
 
     // Gera token único
@@ -65,10 +67,7 @@ export class AuthService {
     expiresAt.setHours(expiresAt.getHours() + 1); // Token válido por 1 hora
 
     // Invalida tokens anteriores não usados
-    await this.tokenRepo.update(
-      { idProfessor: user.id, used: 0 },
-      { used: 1 },
-    );
+    await this.tokenRepo.update({ idProfessor: user.id, used: 0 }, { used: 1 });
 
     // Cria novo token
     const resetToken = this.tokenRepo.create({
@@ -91,7 +90,9 @@ export class AuthService {
     console.log(`Expira em: ${expiresAt.toLocaleString('pt-BR')}`);
     console.log(`=====================================\n`);
 
-    return { message: 'Se o email existir, um link de recuperação será enviado.' };
+    return {
+      message: 'Se o email existir, um link de recuperação será enviado.',
+    };
   }
 
   /**

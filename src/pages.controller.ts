@@ -186,12 +186,7 @@ export class PagesController {
   @Get('confirmar-exclusao-turma')
   confirmarExclusaoTurma(@Res() res: Response) {
     return res.sendFile(
-      join(
-        process.cwd(),
-        'public',
-        'html',
-        'confirmar-exclusao-turma.html',
-      ),
+      join(process.cwd(), 'public', 'html', 'confirmar-exclusao-turma.html'),
     );
   }
 }

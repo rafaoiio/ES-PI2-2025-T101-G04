@@ -3,7 +3,13 @@
  * Controller responsável pela auditoria de notas.
  * Endpoints para consultar auditoria.
  */
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuditoriaService } from './auditoria.service';
 
@@ -20,4 +26,3 @@ export class AuditoriaController {
     return this.auditoriaService.getAuditoriaPorTurma(id);
   }
 }
-

@@ -6,9 +6,10 @@ import { LancamentoService } from './lancamento.service';
 import { Nota } from '../entities/nota.entity';
 import { Matricula } from '../entities/matricula.entity';
 import { ComponenteNota } from '../entities/componente-nota.entity';
+import { Turma } from '../entities/turma.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Nota, Matricula, ComponenteNota])],
+  imports: [TypeOrmModule.forFeature([Nota, Matricula, ComponenteNota, Turma])],
   controllers: [LancamentoController],
   providers: [LancamentoService],
   exports: [LancamentoService],

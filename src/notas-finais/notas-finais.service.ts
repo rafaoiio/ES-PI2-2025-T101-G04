@@ -55,7 +55,11 @@ export class NotasFinaisService {
    * @param idProfessor ID do professor logado (opcional, para validação)
    * @returns Array com notas por componente e nota final de cada aluno
    */
-  async calcularNotasFinais(idDisciplina: number, idTurma: number, idProfessor?: number) {
+  async calcularNotasFinais(
+    idDisciplina: number,
+    idTurma: number,
+    idProfessor?: number,
+  ) {
     const disciplina = await this.disciplinaRepo.findOne({
       where: { idDisciplina },
     });
@@ -119,9 +123,7 @@ export class NotasFinaisService {
       if (regra.tipo === 'SIMPLES') {
         // Média aritmética: soma todos os valores e divide pela quantidade
         // Só calcula se TODAS as notas estiverem presentes
-        const valores = Object.values(notasAluno).filter(
-          (v) => v !== null,
-        ) as number[];
+        const valores = Object.values(notasAluno).filter((v) => v !== null);
         if (valores.length === componentes.length) {
           notaFinal = valores.reduce((acc, v) => acc + v, 0) / valores.length;
         }
@@ -199,7 +201,7 @@ export class NotasFinaisService {
   /**
    * Calcula Nota Final Ajustada arredondando para múltiplo de 0,5.
    * Em empates exatos (0,25 ou 0,75), arredonda para baixo.
-   * 
+   *
    * Exemplos:
    * - 7.25 -> 7.0 (arredonda para baixo)
    * - 7.75 -> 7.5 (arredonda para baixo)
@@ -293,7 +295,9 @@ export class NotasFinaisService {
 
     // Valida faixa 0,0 a 10,0
     if (notaAjustada < 0 || notaAjustada > 10) {
-      throw new BadRequestException('Nota Final Ajustada deve estar entre 0,0 e 10,0');
+      throw new BadRequestException(
+        'Nota Final Ajustada deve estar entre 0,0 e 10,0',
+      );
     }
 
     // Mantém Nota Final automática inalterada
@@ -308,7 +312,10 @@ export class NotasFinaisService {
         .execute();
     } catch (error) {
       // Se a coluna não existir, apenas loga o erro mas não falha
-      console.warn(`[atualizarNotaAjustada] Erro ao atualizar notaFinalAjustada (coluna pode não existir):`, error.message);
+      console.warn(
+        `[atualizarNotaAjustada] Erro ao atualizar notaFinalAjustada (coluna pode não existir):`,
+        error.message,
+      );
     }
   }
 

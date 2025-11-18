@@ -48,9 +48,7 @@ export class AuthController {
    * Endpoint para redefinir senha usando token.
    */
   @Post('reset-password')
-  async resetPassword(
-    @Body() body: { token: string; novaSenha: string },
-  ) {
+  async resetPassword(@Body() body: { token: string; novaSenha: string }) {
     return this.auth.resetPassword(body.token, body.novaSenha);
   }
 }

@@ -25,7 +25,11 @@ export class NotasFinaisController {
     @Request() req,
   ) {
     const idProfessor = req.user?.userId;
-    return this.notasFinaisService.calcularNotasFinais(discId, turmaId, idProfessor);
+    return this.notasFinaisService.calcularNotasFinais(
+      discId,
+      turmaId,
+      idProfessor,
+    );
   }
 
   /**
@@ -36,10 +40,7 @@ export class NotasFinaisController {
     @Param('discId', ParseIntPipe) discId: number,
     @Body() body: { habilitar: boolean },
   ) {
-    return this.notasFinaisService.toggleNotaAjustada(
-      discId,
-      body.habilitar,
-    );
+    return this.notasFinaisService.toggleNotaAjustada(discId, body.habilitar);
   }
 
   /**

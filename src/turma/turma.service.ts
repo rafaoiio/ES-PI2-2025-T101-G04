@@ -54,16 +54,21 @@ export class TurmaService {
    */
   async findAll(idProfessor: number, disciplinaId?: number) {
     try {
-      console.log('[Turma Service] findAll chamado com idProfessor:', idProfessor, 'tipo:', typeof idProfessor);
+      console.log(
+        '[Turma Service] findAll chamado com idProfessor:',
+        idProfessor,
+        'tipo:',
+        typeof idProfessor,
+      );
       console.log('[Turma Service] disciplinaId:', disciplinaId);
-      
+
       // Verifica se há turmas no banco (para debug)
       const todasTurmas = await this.turmaRepo.find({
         select: ['idTurma', 'idDisciplina', 'idProfessor'],
         take: 10,
       });
       console.log('[Turma Service] Primeiras 10 turmas no banco:', todasTurmas);
-      
+
       const queryBuilder = this.turmaRepo
         .createQueryBuilder('turma')
         .leftJoinAndSelect('turma.disciplina', 'disciplina')
@@ -71,7 +76,9 @@ export class TurmaService {
         .orderBy('turma.nomeTurma', 'ASC');
 
       if (disciplinaId) {
-        queryBuilder.andWhere('turma.idDisciplina = :disciplinaId', { disciplinaId });
+        queryBuilder.andWhere('turma.idDisciplina = :disciplinaId', {
+          disciplinaId,
+        });
       }
 
       // Seleciona apenas colunas que existem no banco (sem CODIGO)
@@ -94,9 +101,19 @@ export class TurmaService {
       ]);
 
       const turmas = await queryBuilder.getMany();
-      console.log('[Turma Service] Turmas encontradas para o professor:', turmas.length);
-      console.log('[Turma Service] Turmas:', turmas.map(t => ({ idTurma: t.idTurma, idProfessor: t.idProfessor, nomeTurma: t.nomeTurma })));
-      
+      console.log(
+        '[Turma Service] Turmas encontradas para o professor:',
+        turmas.length,
+      );
+      console.log(
+        '[Turma Service] Turmas:',
+        turmas.map((t) => ({
+          idTurma: t.idTurma,
+          idProfessor: t.idProfessor,
+          nomeTurma: t.nomeTurma,
+        })),
+      );
+
       return turmas;
     } catch (error) {
       console.error('[Turma Service] Erro ao buscar turmas:', error);
@@ -144,7 +161,7 @@ export class TurmaService {
   async create(dto: CreateTurmaDto, idProfessor: number) {
     console.log('[Turma Service] Criando turma com idProfessor:', idProfessor);
     console.log('[Turma Service] DTO recebido:', dto);
-    
+
     const turma = this.turmaRepo.create({
       ...dto,
       idProfessor,
@@ -153,7 +170,7 @@ export class TurmaService {
     console.log('[Turma Service] Turma criada (antes de salvar):', turma);
     const turmaSalva = await this.turmaRepo.save(turma);
     console.log('[Turma Service] Turma salva:', turmaSalva);
-    
+
     return turmaSalva;
   }
 
@@ -163,12 +180,15 @@ export class TurmaService {
    */
   async update(id: number, dto: UpdateTurmaDto, idProfessor?: number) {
     const turma = await this.findOne(id);
-    
+
     // Se idProfessor fornecido, verifica se a turma pertence ao professor
     if (idProfessor !== undefined && turma.idProfessor !== idProfessor) {
-      throw new HttpException('Você não tem permissão para atualizar esta turma', HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        'Você não tem permissão para atualizar esta turma',
+        HttpStatus.FORBIDDEN,
+      );
     }
-    
+
     Object.assign(turma, dto);
     return this.turmaRepo.save(turma);
   }
@@ -242,7 +262,9 @@ export class TurmaService {
       console.log(`Turma ID: ${idTurma}`);
       console.log(`Link: ${resetLink}`);
       console.log(`Token: ${existingRequest.token}`);
-      console.log(`Expira em: ${existingRequest.expiresAt.toLocaleString('pt-BR')}`);
+      console.log(
+        `Expira em: ${existingRequest.expiresAt.toLocaleString('pt-BR')}`,
+      );
       console.log(`========================================\n`);
 
       return {

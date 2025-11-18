@@ -10,12 +10,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Aluno } from '../entities/aluno.entity';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
+import { Turma } from '../entities/turma.entity';
+import { Matricula } from '../entities/matricula.entity';
 
 @Injectable()
 export class AlunoService {
   constructor(
     @InjectRepository(Aluno)
     private alunoRepo: Repository<Aluno>,
+    @InjectRepository(Turma)
+    private turmaRepo: Repository<Turma>,
+    @InjectRepository(Matricula)
+    private matriculaRepo: Repository<Matricula>,
   ) {}
 
   /**
@@ -43,8 +49,7 @@ export class AlunoService {
   async findAll(idProfessor?: number) {
     if (idProfessor) {
       // Busca alunos apenas das turmas do professor
-      const turmaRepo = this.alunoRepo.manager.getRepository('Turma');
-      const turmas = await turmaRepo.find({
+      const turmas = await this.turmaRepo.find({
         where: { idProfessor },
         select: ['idTurma'],
       });
@@ -53,11 +58,10 @@ export class AlunoService {
         return [];
       }
 
-      const turmasIds = turmas.map((t: { idTurma: number }) => t.idTurma);
+      const turmasIds = turmas.map((t) => t.idTurma);
 
       // Busca matrículas dessas turmas
-      const matriculaRepo = this.alunoRepo.manager.getRepository('Matricula');
-      const matriculas = await matriculaRepo
+      const matriculas = await this.matriculaRepo
         .createQueryBuilder('matricula')
         .select('DISTINCT matricula.ra', 'ra')
         .where('matricula.idTurma IN (:...turmasIds)', { turmasIds })
@@ -201,8 +205,7 @@ export class AlunoService {
 
     dados.forEach((item, index) => {
       // Aceita "identificador", "ra" ou "RA" como chave
-      const ra =
-        item.identificador || item.ra || item.RA || item.id || item.ID;
+      const ra = item.identificador || item.ra || item.RA || item.id || item.ID;
       const nome = item.nome || item.name || item.NOME || item.NAME;
 
       if (!ra || !nome) {

@@ -37,18 +37,31 @@ export class DisciplinaController {
   async findAll(@Request() req) {
     try {
       const idProfessorRaw = req.user?.userId;
-      console.log('[Disciplina Controller] findAll chamado - idProfessor recebido (raw):', idProfessorRaw);
-      
+      console.log(
+        '[Disciplina Controller] findAll chamado - idProfessor recebido (raw):',
+        idProfessorRaw,
+      );
+
       // Converte para número explicitamente
-      const idProfessor = idProfessorRaw ? (typeof idProfessorRaw === 'string' ? parseInt(idProfessorRaw, 10) : Number(idProfessorRaw)) : undefined;
-      
+      const idProfessor = idProfessorRaw
+        ? typeof idProfessorRaw === 'string'
+          ? parseInt(idProfessorRaw, 10)
+          : Number(idProfessorRaw)
+        : undefined;
+
       // Disciplinas são globais - passamos idProfessor apenas para logs, mas retornamos todas
       const disciplinas = await this.disciplinaService.findAll(idProfessor);
-      console.log('[Disciplina Controller] Total de disciplinas retornadas:', disciplinas.length);
-      
+      console.log(
+        '[Disciplina Controller] Total de disciplinas retornadas:',
+        disciplinas.length,
+      );
+
       return disciplinas;
     } catch (error) {
-      console.error('[Disciplina Controller] Erro ao buscar disciplinas:', error);
+      console.error(
+        '[Disciplina Controller] Erro ao buscar disciplinas:',
+        error,
+      );
       throw new HttpException(
         {
           message: 'Erro ao buscar disciplinas',

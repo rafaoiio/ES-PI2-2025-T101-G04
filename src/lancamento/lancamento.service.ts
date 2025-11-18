@@ -9,6 +9,7 @@ import { Repository, In } from 'typeorm';
 import { Nota } from '../entities/nota.entity';
 import { Matricula } from '../entities/matricula.entity';
 import { ComponenteNota } from '../entities/componente-nota.entity';
+import { Turma } from '../entities/turma.entity';
 import { UpdateLancamentoDto } from './dto/update-lancamento.dto';
 
 /**
@@ -31,6 +32,8 @@ export class LancamentoService {
     private matriculaRepo: Repository<Matricula>,
     @InjectRepository(ComponenteNota)
     private componenteRepo: Repository<ComponenteNota>,
+    @InjectRepository(Turma)
+    private turmaRepo: Repository<Turma>,
   ) {}
 
   /**
@@ -46,11 +49,15 @@ export class LancamentoService {
    * @param idProfessor ID do professor logado para validar permissão
    * @returns Array com matriculaId, RA, nome, nota e flag readonly
    */
-  async getGrid(idTurma: number, idComponente: number, readonly: boolean = true, idProfessor?: number) {
+  async getGrid(
+    idTurma: number,
+    idComponente: number,
+    readonly: boolean = true,
+    idProfessor?: number,
+  ) {
     // Valida que a turma pertence ao professor (se idProfessor fornecido)
     if (idProfessor) {
-      const turmaRepo = this.matriculaRepo.manager.getRepository('Turma');
-      const turma = await turmaRepo.findOne({
+      const turma = await this.turmaRepo.findOne({
         where: { idTurma },
       });
 
@@ -128,8 +135,7 @@ export class LancamentoService {
       throw new NotFoundException('Matrícula não encontrada');
     }
 
-    const turmaRepo = this.matriculaRepo.manager.getRepository('Turma');
-    const turma = await turmaRepo.findOne({
+    const turma = await this.turmaRepo.findOne({
       where: { idTurma: matricula.idTurma },
     });
 

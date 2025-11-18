@@ -33,7 +33,12 @@ export class LancamentoController {
   ) {
     const isReadonly = readonly !== 'false'; // Padrão é true (somente leitura)
     const idProfessor = req.user?.userId;
-    return this.lancamentoService.getGrid(turmaId, componenteId, isReadonly, idProfessor);
+    return this.lancamentoService.getGrid(
+      turmaId,
+      componenteId,
+      isReadonly,
+      idProfessor,
+    );
   }
 
   @Patch(':matriculaId/:componenteId')
@@ -44,7 +49,12 @@ export class LancamentoController {
     @Request() req,
   ) {
     const idProfessor = req.user.userId;
-    return this.lancamentoService.updateNota(matriculaId, componenteId, dto, idProfessor);
+    return this.lancamentoService.updateNota(
+      matriculaId,
+      componenteId,
+      dto,
+      idProfessor,
+    );
   }
 
   /**
@@ -52,7 +62,14 @@ export class LancamentoController {
    */
   @Post('bulk-update')
   bulkUpdate(
-    @Body() body: { updates: Array<{ matriculaId: number; componenteId: number; valor: number }> },
+    @Body()
+    body: {
+      updates: Array<{
+        matriculaId: number;
+        componenteId: number;
+        valor: number;
+      }>;
+    },
     @Request() req,
   ) {
     const idProfessor = req.user.userId;

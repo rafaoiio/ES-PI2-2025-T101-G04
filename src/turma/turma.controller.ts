@@ -40,30 +40,55 @@ export class TurmaController {
   async findAll(@Request() req, @Query('disciplinaId') disciplinaId?: string) {
     try {
       const idProfessorRaw = req.user?.userId;
-      console.log('[Turma Controller] findAll chamado - idProfessor recebido (raw):', idProfessorRaw);
+      console.log(
+        '[Turma Controller] findAll chamado - idProfessor recebido (raw):',
+        idProfessorRaw,
+      );
       console.log('[Turma Controller] Tipo:', typeof idProfessorRaw);
-      console.log('[Turma Controller] req.user completo:', JSON.stringify(req.user, null, 2));
-      
+      console.log(
+        '[Turma Controller] req.user completo:',
+        JSON.stringify(req.user, null, 2),
+      );
+
       if (!idProfessorRaw) {
-        console.error('[Turma Controller] idProfessor não encontrado em req.user');
-        throw new HttpException('Usuário não autenticado', HttpStatus.UNAUTHORIZED);
+        console.error(
+          '[Turma Controller] idProfessor não encontrado em req.user',
+        );
+        throw new HttpException(
+          'Usuário não autenticado',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
-      
+
       // Converte para número explicitamente
-      const idProfessor = typeof idProfessorRaw === 'string' ? parseInt(idProfessorRaw, 10) : Number(idProfessorRaw);
+      const idProfessor =
+        typeof idProfessorRaw === 'string'
+          ? parseInt(idProfessorRaw, 10)
+          : Number(idProfessorRaw);
       console.log('[Turma Controller] idProfessor convertido:', idProfessor);
-      
+
       if (isNaN(idProfessor)) {
-        console.error('[Turma Controller] idProfessor não é um número válido:', idProfessorRaw);
-        throw new HttpException('ID de professor inválido', HttpStatus.BAD_REQUEST);
+        console.error(
+          '[Turma Controller] idProfessor não é um número válido:',
+          idProfessorRaw,
+        );
+        throw new HttpException(
+          'ID de professor inválido',
+          HttpStatus.BAD_REQUEST,
+        );
       }
-      
+
       const id = disciplinaId ? parseInt(disciplinaId, 10) : undefined;
-      console.log('[Turma Controller] Buscando turmas com idProfessor:', idProfessor, 'disciplinaId:', id);
-      
+      console.log(
+        '[Turma Controller] Buscando turmas com idProfessor:',
+        idProfessor,
+        'disciplinaId:',
+        id,
+      );
+
       const turmas = await this.turmaService.findAll(idProfessor, id);
       console.log('[Turma Controller] Turmas encontradas:', turmas.length);
-      
+
       return turmas;
     } catch (error) {
       console.error('[Turma Controller] Erro ao buscar turmas:', error);
@@ -106,25 +131,48 @@ export class TurmaController {
   @Post()
   create(@Body() dto: CreateTurmaDto, @Request() req) {
     const idProfessorRaw = req.user?.userId;
-    console.log('[Turma Controller] Criando turma - idProfessor recebido (raw):', idProfessorRaw);
+    console.log(
+      '[Turma Controller] Criando turma - idProfessor recebido (raw):',
+      idProfessorRaw,
+    );
     console.log('[Turma Controller] Tipo:', typeof idProfessorRaw);
-    console.log('[Turma Controller] req.user completo:', JSON.stringify(req.user, null, 2));
-    
+    console.log(
+      '[Turma Controller] req.user completo:',
+      JSON.stringify(req.user, null, 2),
+    );
+
     if (!idProfessorRaw) {
-      console.error('[Turma Controller] idProfessor não encontrado em req.user');
-      throw new HttpException('Usuário não autenticado', HttpStatus.UNAUTHORIZED);
+      console.error(
+        '[Turma Controller] idProfessor não encontrado em req.user',
+      );
+      throw new HttpException(
+        'Usuário não autenticado',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
-    
+
     // Converte para número explicitamente
-    const idProfessor = typeof idProfessorRaw === 'string' ? parseInt(idProfessorRaw, 10) : Number(idProfessorRaw);
+    const idProfessor =
+      typeof idProfessorRaw === 'string'
+        ? parseInt(idProfessorRaw, 10)
+        : Number(idProfessorRaw);
     console.log('[Turma Controller] idProfessor convertido:', idProfessor);
-    
+
     if (isNaN(idProfessor)) {
-      console.error('[Turma Controller] idProfessor não é um número válido:', idProfessorRaw);
-      throw new HttpException('ID de professor inválido', HttpStatus.BAD_REQUEST);
+      console.error(
+        '[Turma Controller] idProfessor não é um número válido:',
+        idProfessorRaw,
+      );
+      throw new HttpException(
+        'ID de professor inválido',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    
-    console.log('[Turma Controller] Criando turma com idProfessor:', idProfessor);
+
+    console.log(
+      '[Turma Controller] Criando turma com idProfessor:',
+      idProfessor,
+    );
     return this.turmaService.create(dto, idProfessor);
   }
 
@@ -137,14 +185,24 @@ export class TurmaController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateTurmaDto, @Request() req) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateTurmaDto,
+    @Request() req,
+  ) {
     // Garante que apenas o dono da turma pode atualizá-la
     const idProfessor = req.user?.userId;
-    console.log('[Turma Controller] Atualizando turma - idProfessor:', idProfessor);
-    
+    console.log(
+      '[Turma Controller] Atualizando turma - idProfessor:',
+      idProfessor,
+    );
+
     // Converte para número explicitamente
-    const idProfessorNum = typeof idProfessor === 'string' ? parseInt(idProfessor, 10) : Number(idProfessor);
-    
+    const idProfessorNum =
+      typeof idProfessor === 'string'
+        ? parseInt(idProfessor, 10)
+        : Number(idProfessor);
+
     return this.turmaService.update(id, dto, idProfessorNum);
   }
 

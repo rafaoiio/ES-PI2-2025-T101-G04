@@ -30,29 +30,38 @@ export class DashboardService {
   ) {}
 
   async getMetrics(idProfessor: number) {
-    console.log('[Dashboard Service] getMetrics chamado com idProfessor:', idProfessor);
+    console.log(
+      '[Dashboard Service] getMetrics chamado com idProfessor:',
+      idProfessor,
+    );
     console.log('[Dashboard Service] Tipo de idProfessor:', typeof idProfessor);
-    
+
     // MÉTRICAS DO SISTEMA:
     // - Disciplinas: TODAS as disciplinas cadastradas no sistema (global)
     // - Turmas: Apenas as turmas do professor (filtrado)
     // - Componentes: TODOS os componentes cadastrados no sistema (global)
     // - Alunos: Apenas alunos matriculados em turmas do professor (filtrado)
-    
+
     // Busca todas as turmas do professor
     const turmasDoProfessor = await this.turmaRepo.find({
       where: { idProfessor },
       select: ['idTurma', 'idDisciplina', 'idProfessor'],
     });
 
-    console.log('[Dashboard Service] Turmas do professor encontradas:', turmasDoProfessor.length);
+    console.log(
+      '[Dashboard Service] Turmas do professor encontradas:',
+      turmasDoProfessor.length,
+    );
     console.log('[Dashboard Service] Turmas do professor:', turmasDoProfessor);
 
-    const turmasIds = turmasDoProfessor.map(t => t.idTurma);
+    const turmasIds = turmasDoProfessor.map((t) => t.idTurma);
 
     // Conta TODAS as disciplinas cadastradas no sistema (não filtrado)
     const disciplinas = await this.disciplinaRepo.count();
-    console.log('[Dashboard Service] Total de disciplinas no sistema:', disciplinas);
+    console.log(
+      '[Dashboard Service] Total de disciplinas no sistema:',
+      disciplinas,
+    );
 
     // Conta apenas turmas do professor
     const turmas = turmasIds.length;
@@ -60,7 +69,10 @@ export class DashboardService {
 
     // Conta TODOS os componentes cadastrados no sistema (não filtrado)
     const componentes = await this.componenteRepo.count();
-    console.log('[Dashboard Service] Total de componentes no sistema:', componentes);
+    console.log(
+      '[Dashboard Service] Total de componentes no sistema:',
+      componentes,
+    );
 
     // Conta apenas alunos únicos matriculados em turmas do professor
     let alunos = 0;
@@ -72,15 +84,21 @@ export class DashboardService {
         .select('DISTINCT matricula.ra', 'ra')
         .where('matricula.idTurma IN (:...turmasIds)', { turmasIds: turmasIds })
         .getRawMany();
-      
-      console.log('[Dashboard Service] Matrículas encontradas:', matriculas.length);
+
+      console.log(
+        '[Dashboard Service] Matrículas encontradas:',
+        matriculas.length,
+      );
       console.log('[Dashboard Service] Matrículas:', matriculas);
-      
+
       // Conta RAs únicos retornados da query
       // getRawMany retorna array de objetos { ra: number }
       alunos = matriculas.length;
     }
-    console.log('[Dashboard Service] Alunos únicos nas turmas do professor:', alunos);
+    console.log(
+      '[Dashboard Service] Alunos únicos nas turmas do professor:',
+      alunos,
+    );
 
     const result = {
       disciplinas,
@@ -88,7 +106,7 @@ export class DashboardService {
       componentes,
       alunos,
     };
-    
+
     console.log('[Dashboard Service] Métricas finais:', result);
     return result;
   }
@@ -96,7 +114,7 @@ export class DashboardService {
   /**
    * Verifica se é o primeiro acesso do docente.
    * Retorna true se não houver instituição ou curso cadastrados.
-   * 
+   *
    * IMPORTANTE: Instituições e cursos são globais no sistema,
    * então verifica se existe pelo menos uma instituição E um curso cadastrados.
    */

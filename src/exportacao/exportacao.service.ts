@@ -59,7 +59,11 @@ export class ExportacaoService {
    * @returns Objeto com conteúdo CSV e nome do arquivo
    * @throws ConflictException se houver pendências
    */
-  async exportarCSV(idDisciplina: number, idTurma: number, idProfessor?: number) {
+  async exportarCSV(
+    idDisciplina: number,
+    idTurma: number,
+    idProfessor?: number,
+  ) {
     const disciplina = await this.disciplinaRepo.findOne({
       where: { idDisciplina },
     });
@@ -153,7 +157,7 @@ export class ExportacaoService {
     // Monta cabeçalho: ra, nome, siglas dos componentes, nota_final, nota_final_ajustada (se habilitada)
     const siglas = componentes.map((c) => c.sigla || c.nome);
     const headerCols = ['ra', 'nome', ...siglas, 'nota_final'];
-    
+
     // Adiciona Nota Final Ajustada se habilitada (coluna pode não existir no banco)
     if ((disciplina as any).notaFinalAjustadaHabilitada === 1) {
       headerCols.push('nota_final_ajustada');
@@ -175,7 +179,7 @@ export class ExportacaoService {
         }),
         nf.notaFinal !== null ? nf.notaFinal.toFixed(2).replace('.', ',') : '—',
       ];
-      
+
       // Adiciona Nota Final Ajustada se habilitada (coluna pode não existir no banco)
       if ((disciplina as any).notaFinalAjustadaHabilitada === 1) {
         valores.push(
@@ -184,7 +188,7 @@ export class ExportacaoService {
             : '—',
         );
       }
-      
+
       return valores.join(';');
     });
 
@@ -220,7 +224,11 @@ export class ExportacaoService {
    * @returns Objeto com conteúdo JSON e nome do arquivo
    * @throws ConflictException se houver pendências
    */
-  async exportarJSON(idDisciplina: number, idTurma: number, idProfessor?: number) {
+  async exportarJSON(
+    idDisciplina: number,
+    idTurma: number,
+    idProfessor?: number,
+  ) {
     const disciplina = await this.disciplinaRepo.findOne({
       where: { idDisciplina },
     });

@@ -57,4 +57,3 @@ export class TurmaDeleteRequest {
   @Column({ name: 'CONFIRMED_AT', type: 'timestamp', nullable: true })
   confirmedAt?: Date;
 }
-

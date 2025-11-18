@@ -67,7 +67,7 @@ export class DisciplinaService {
       formulaMedia,
       idCurso: curso.idCurso,
     });
-    
+
     // Só adiciona codigo se for fornecido (coluna pode não existir no banco)
     if (dto.codigo?.trim()) {
       (disciplina as any).codigo = dto.codigo.trim();
@@ -98,15 +98,21 @@ export class DisciplinaService {
    */
   async findAll(idProfessor?: number) {
     try {
-      console.log('[Disciplina Service] findAll chamado com idProfessor:', idProfessor);
-      
+      console.log(
+        '[Disciplina Service] findAll chamado com idProfessor:',
+        idProfessor,
+      );
+
       // Disciplinas são globais - retorna todas independente do professor
       // O filtro por professor só é usado para o dashboard (contagem de disciplinas com turmas)
       const disciplinas = await this.disciplinaRepo.find({
         order: { nome: 'ASC' },
       });
-      
-      console.log('[Disciplina Service] Total de disciplinas encontradas:', disciplinas.length);
+
+      console.log(
+        '[Disciplina Service] Total de disciplinas encontradas:',
+        disciplinas.length,
+      );
 
       return disciplinas.map((d) => {
         try {

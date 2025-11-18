@@ -8,12 +8,9 @@ import { Nota } from '../entities/nota.entity';
 import { Matricula } from '../entities/matricula.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AuditoriaNota, Nota, Matricula]),
-  ],
+  imports: [TypeOrmModule.forFeature([AuditoriaNota, Nota, Matricula])],
   controllers: [AuditoriaController],
   providers: [AuditoriaService],
   exports: [AuditoriaService],
 })
 export class AuditoriaModule {}
-

@@ -1,5 +1,13 @@
 // VITOR
-import { Controller, Get, Param, ParseIntPipe, Res, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Res,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ExportacaoService } from './exportacao.service';
@@ -43,10 +51,7 @@ export class ExportacaoController {
     );
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${filename}"`,
-    );
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(json);
   }
 }

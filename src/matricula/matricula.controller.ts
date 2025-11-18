@@ -23,7 +23,10 @@ export class MatriculaController {
     try {
       return await this.matriculaService.findByTurma(turmaId);
     } catch (error) {
-      console.error(`Erro no controller ao buscar matrículas da turma ${turmaId}:`, error);
+      console.error(
+        `Erro no controller ao buscar matrículas da turma ${turmaId}:`,
+        error,
+      );
       throw error;
     }
   }

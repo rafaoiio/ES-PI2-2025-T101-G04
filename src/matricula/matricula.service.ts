@@ -47,8 +47,10 @@ export class MatriculaService {
    */
   async findByTurma(idTurma: number) {
     try {
-      console.log(`[findByTurma] Iniciando busca de matrículas para turma ${idTurma}`);
-      
+      console.log(
+        `[findByTurma] Iniciando busca de matrículas para turma ${idTurma}`,
+      );
+
       // Busca matrículas sem carregar relacionamento primeiro
       const matriculas = await this.matriculaRepo.find({
         where: { idTurma },
@@ -61,10 +63,10 @@ export class MatriculaService {
       }
 
       // Busca alunos separadamente para evitar problemas de relacionamento
-      const ras = [...new Set(matriculas.map(m => m.ra))]; // Remove duplicatas
-      
+      const ras = [...new Set(matriculas.map((m) => m.ra))]; // Remove duplicatas
+
       console.log(`[findByTurma] RAs únicos encontrados: ${ras.join(', ')}`);
-      
+
       if (ras.length === 0) {
         console.warn(`[findByTurma] Nenhum RA encontrado nas matrículas`);
         return [];
@@ -78,7 +80,10 @@ export class MatriculaService {
           where: { ra: In(ras) },
         });
       } catch (inError) {
-        console.warn('[findByTurma] Erro com In(), tentando QueryBuilder:', inError.message);
+        console.warn(
+          '[findByTurma] Erro com In(), tentando QueryBuilder:',
+          inError.message,
+        );
         // Fallback para QueryBuilder (compatível com Oracle)
         alunos = await this.alunoRepo
           .createQueryBuilder('aluno')
@@ -86,14 +91,16 @@ export class MatriculaService {
           .getMany();
       }
 
-      console.log(`[findByTurma] Encontrados ${alunos.length} alunos de ${ras.length} RAs únicos`);
+      console.log(
+        `[findByTurma] Encontrados ${alunos.length} alunos de ${ras.length} RAs únicos`,
+      );
 
       // Cria mapa de alunos por RA para lookup rápido
-      const alunosMap = new Map(alunos.map(a => [a.ra, a]));
+      const alunosMap = new Map(alunos.map((a) => [a.ra, a]));
 
       // Combina matrículas com alunos e filtra apenas as válidas
       const matriculasComAluno = matriculas
-        .map(m => {
+        .map((m) => {
           const aluno = alunosMap.get(m.ra);
           if (!aluno) {
             console.warn(`[findByTurma] Aluno com RA ${m.ra} não encontrado`);
@@ -102,7 +109,9 @@ export class MatriculaService {
         })
         .filter((m): m is Matricula & { aluno: Aluno } => m !== null);
 
-      console.log(`[findByTurma] ${matriculasComAluno.length} matrículas válidas (com aluno)`);
+      console.log(
+        `[findByTurma] ${matriculasComAluno.length} matrículas válidas (com aluno)`,
+      );
 
       // Ordena alfabeticamente por nome do aluno
       const matriculasOrdenadas = matriculasComAluno.sort((a, b) => {
@@ -113,7 +122,7 @@ export class MatriculaService {
 
       // Retorna com estrutura esperada pelo frontend
       // notaFinalAjustada não é incluída porque a coluna pode não existir no banco
-      const result = matriculasOrdenadas.map(m => ({
+      const result = matriculasOrdenadas.map((m) => ({
         idMatricula: m.idMatricula,
         ra: m.ra,
         idTurma: m.idTurma,
@@ -126,10 +135,15 @@ export class MatriculaService {
         },
       }));
 
-      console.log(`[findByTurma] Retornando ${result.length} matrículas processadas`);
+      console.log(
+        `[findByTurma] Retornando ${result.length} matrículas processadas`,
+      );
       return result;
     } catch (error) {
-      console.error('[findByTurma] Erro ao buscar matrículas por turma:', error);
+      console.error(
+        '[findByTurma] Erro ao buscar matrículas por turma:',
+        error,
+      );
       console.error('[findByTurma] Stack trace:', error.stack);
       console.error('[findByTurma] Turma ID:', idTurma);
       console.error('[findByTurma] Tipo do erro:', error.constructor.name);
@@ -153,10 +167,15 @@ export class MatriculaService {
     try {
       // Garante que os valores são números
       const ra = typeof dto.ra === 'string' ? parseInt(dto.ra, 10) : dto.ra;
-      const idTurma = typeof dto.idTurma === 'string' ? parseInt(dto.idTurma, 10) : dto.idTurma;
+      const idTurma =
+        typeof dto.idTurma === 'string'
+          ? parseInt(dto.idTurma, 10)
+          : dto.idTurma;
 
       if (isNaN(ra) || isNaN(idTurma)) {
-        throw new BadRequestException('RA e ID da turma devem ser números válidos');
+        throw new BadRequestException(
+          'RA e ID da turma devem ser números válidos',
+        );
       }
 
       const aluno = await this.alunoRepo.findOne({
@@ -181,7 +200,12 @@ export class MatriculaService {
       // Usa QueryBuilder para evitar selecionar coluna NOTA_FINAL_AJUSTADA que pode não existir
       const existente = await this.matriculaRepo
         .createQueryBuilder('matricula')
-        .select(['matricula.idMatricula', 'matricula.ra', 'matricula.idTurma', 'matricula.dataMatricula'])
+        .select([
+          'matricula.idMatricula',
+          'matricula.ra',
+          'matricula.idTurma',
+          'matricula.dataMatricula',
+        ])
         .where('matricula.ra = :ra', { ra })
         .andWhere('matricula.idTurma = :idTurma', { idTurma })
         .getOne();
@@ -194,9 +218,9 @@ export class MatriculaService {
         ra,
         idTurma,
       });
-      
+
       const saved = await this.matriculaRepo.save(matricula);
-      
+
       // Retorna apenas os campos necessários, sem NOTA_FINAL_AJUSTADA que pode não existir
       return {
         idMatricula: saved.idMatricula,
@@ -208,16 +232,20 @@ export class MatriculaService {
       console.error('Erro ao criar matrícula:', error);
       console.error('DTO recebido:', dto);
       console.error('Stack trace:', error.stack);
-      
+
       // Re-lança exceções do NestJS sem modificação
-      if (error instanceof NotFoundException || 
-          error instanceof ConflictException || 
-          error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
-      
+
       // Para outros erros, lança BadRequestException genérico
-      throw new BadRequestException(`Erro ao criar matrícula: ${error.message}`);
+      throw new BadRequestException(
+        `Erro ao criar matrícula: ${error.message}`,
+      );
     }
   }
 
@@ -256,9 +284,7 @@ export class MatriculaService {
     });
 
     if (matriculas.length !== ids.length) {
-      throw new NotFoundException(
-        'Algumas matrículas não foram encontradas',
-      );
+      throw new NotFoundException('Algumas matrículas não foram encontradas');
     }
 
     await this.matriculaRepo.remove(matriculas);

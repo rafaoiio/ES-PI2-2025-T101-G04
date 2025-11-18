@@ -5,7 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Instituicao } from '../entities/instituicao.entity';
 import { CreateInstituicaoDto } from './dto/create-instituicao.dto';
 import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
@@ -84,14 +84,14 @@ export class InstituicaoService {
     if (cursosDaInstituicao.length > 0) {
       const idsCursos = cursosDaInstituicao.map((c) => c.idCurso);
       const disciplinas = await this.disciplinaRepo.find({
-        where: { idCurso: idsCursos as any },
+        where: { idCurso: In(idsCursos) },
       });
 
       if (disciplinas.length > 0) {
         // Verifica se há turmas vinculadas (através de disciplinas)
         const idsDisciplinas = disciplinas.map((d) => d.idDisciplina);
         const turmas = await this.turmaRepo.count({
-          where: { idDisciplina: idsDisciplinas as any },
+          where: { idDisciplina: In(idsDisciplinas) },
         });
 
         if (turmas > 0) {

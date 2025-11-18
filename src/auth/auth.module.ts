@@ -12,7 +12,7 @@ import { UsersModule } from '../users/user.module';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { PasswordResetToken } from '../entities/password-reset-token.entity';
-import { StringValue } from 'ms';
+import type { StringValue } from 'ms';
 
 @Module({
   imports: [
