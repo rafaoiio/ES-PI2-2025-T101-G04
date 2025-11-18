@@ -1,0 +1,91 @@
+<!-- LUCAS -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Componentes de Nota - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/disciplinas.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/componentes.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3z"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link active" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Componentes de Nota</h1>
+        <p id="disciplinaInfo" style="color: var(--gray-600);">Selecione uma disciplina para ver os componentes</p>
+      </div>
+      <a href="#" class="btn-primary" id="novoBtn" style="text-decoration: none;">
+        <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Novo Componente
+      </a>
+    </div>
+
+    <div class="card-modern" style="margin-bottom: var(--space-6);">
+      <label for="disciplinaSelect" style="display: block; font-weight: var(--font-medium); color: var(--gray-700); margin-bottom: var(--space-2); font-size: var(--text-sm);">Selecione a Disciplina</label>
+      <div class="input-with-icon">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        <select id="disciplinaSelect" style="width: 100%; padding: var(--space-2) var(--space-3) var(--space-2) 2.5rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); font-size: var(--text-sm); background: var(--gray-50); outline: none; transition: all 0.2s ease;">
+          <option value="">Selecione uma disciplina</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div class="table-wrapper">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Sigla</th>
+              <th style="text-align: center; width: 150px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="componentesTable">
+            <tr>
+              <td colspan="3" style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                Selecione uma disciplina para ver os componentes
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</body>
+</html>
