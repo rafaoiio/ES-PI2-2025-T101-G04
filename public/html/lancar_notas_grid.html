@@ -1,0 +1,113 @@
+<!-- PEDRO -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lançar Notas - Grid - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/lancar_notas_grid.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link active" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Lançar Notas</h1>
+        <p id="componenteInfo" style="color: var(--gray-600);">Carregando informações...</p>
+      </div>
+      <a href="/lancar_notas_select.html" class="btn-secondary" style="text-decoration: none;">
+        ← Voltar para Seleção
+      </a>
+    </div>
+
+    <div class="card-modern" style="margin-bottom: var(--space-6); background: var(--primary-50); border-left: 4px solid var(--primary-600);">
+      <h3 style="font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--gray-900); margin-bottom: var(--space-3);">Instruções</h3>
+      <ul style="margin: 0; padding-left: var(--space-6); color: var(--gray-700); font-size: var(--text-sm); line-height: 1.8;">
+        <li>Digite as notas de 0.00 a 10.00 (duas casas decimais)</li>
+        <li>Clique em "Salvar" em cada linha para salvar a nota individualmente</li>
+        <li>Use o botão "Limpar" (X) para remover uma nota existente</li>
+        <li>Use Tab para navegar entre os campos e Enter para salvar rapidamente</li>
+        <li>Use "Salvar Todas as Notas" para salvar múltiplas notas de uma vez</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: var(--space-4);">
+      <button id="salvarTodasBtn" class="btn-primary" style="display: none; border: none; cursor: pointer;">
+        <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Salvar Todas as Notas
+      </button>
+    </div>
+
+    <div class="card-modern">
+      <table class="table-modern">
+        <thead>
+          <tr>
+            <th>RA</th>
+            <th>Nome</th>
+            <th>Nota</th>
+            <th style="text-align: center;">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="notasTable">
+          <tr>
+            <td colspan="4" style="text-align: center; padding: var(--space-8); color: var(--gray-500);">Carregando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Painel de Auditoria -->
+    <div class="card-modern" style="margin-top: var(--space-8);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+        <h2 style="font-size: var(--text-xl); font-weight: var(--font-semibold); color: var(--gray-900); margin: 0;">Painel de Auditoria</h2>
+        <button id="toggleAuditoriaBtn" class="btn-secondary" style="border: none; cursor: pointer;">
+          Ocultar
+        </button>
+      </div>
+      <div id="auditoriaPanel">
+        <div id="auditoriaContent" style="color: var(--gray-600);">
+          <p>Carregando auditoria...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</body>
+</html>
