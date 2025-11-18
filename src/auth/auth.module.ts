@@ -16,24 +16,6 @@ import { StringValue } from 'ms';
 
 @Module({
   imports: [
-    UsersModule, // esse é um módulo de usuário ( para buscar usuário n// LAURA
-//Autor Rafael Gaudencio Dias
-//Descrição: Pasta criada para centralizar todo o sistema de login e autenticação, garantindo acesso seguro e controle de usuários no sistema.
-
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/user.module';
-import { LocalStrategy } from './local.strategy';
-import { JwtStrategy } from './jwt.strategy';
-import { PasswordResetToken } from '../entities/password-reset-token.entity';
-import { StringValue } from 'ms';
-
-@Module({
-  imports: [
     UsersModule, // esse é um módulo de usuário ( para buscar usuário no login) -- está no user.module.ts
     PassportModule, // biblioteca que cuida de login
     TypeOrmModule.forFeature([PasswordResetToken]), // Repository para tokens de recuperação

@@ -14,7 +14,7 @@
 }
 
 .table-modern thead {
-  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  background: linear-gradient(135deg, var(--slate-50), var(--bg-primary));
   position: sticky;
   top: 0;
   z-index: 10;
@@ -180,24 +180,24 @@
 
 /* Tag de Regra - Simples */
 .tag-regra-simples {
-  border-color: #10b981;
-  color: #059669;
+  border-color: var(--primary-400);
+  color: var(--primary-600);
 }
 
 .tag-regra-simples:hover {
-  background: rgba(16, 185, 129, 0.05);
-  border-color: #059669;
+  background: var(--primary-50);
+  border-color: var(--primary-500);
 }
 
 /* Tag de Regra - Ponderada */
 .tag-regra-ponderada {
-  border-color: #f59e0b;
-  color: #d97706;
+  border-color: var(--primary-600);
+  color: var(--primary-700);
 }
 
 .tag-regra-ponderada:hover {
-  background: rgba(245, 158, 11, 0.05);
-  border-color: #d97706;
+  background: var(--primary-100);
+  border-color: var(--primary-700);
 }
 
 /* Célula de Ações */
@@ -257,14 +257,14 @@
 }
 
 .action-btn-delete-table {
-  border-color: #ef4444;
-  color: #dc2626;
+  border-color: var(--error-500);
+  color: var(--error-600);
 }
 
 .action-btn-delete-table:hover {
-  background: rgba(239, 68, 68, 0.05);
-  border-color: #dc2626;
-  color: #b91c1c;
+  background: var(--error-50);
+  border-color: var(--error-600);
+  color: var(--error-700);
   transform: translateY(-1px);
 }
 

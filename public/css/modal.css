@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  background: linear-gradient(135deg, var(--slate-50), var(--bg-primary));
   flex-shrink: 0;
 }
 
@@ -77,7 +77,7 @@
   width: 2rem;
   height: 2rem;
   padding: 0.5rem;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--bg-gradient-primary);
   color: white;
   border-radius: var(--radius-md);
   display: flex;
@@ -321,7 +321,7 @@
 }
 
 .modal-btn-submit {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--bg-gradient-primary);
   color: white;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
@@ -358,7 +358,7 @@
 .modal-form-input.success,
 .modal-form-select.success {
   border-color: var(--success);
-  background: rgba(16, 185, 129, 0.05);
+  background: var(--primary-50);
 }
 
 .modal-form-success {
