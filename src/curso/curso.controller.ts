@@ -9,12 +9,15 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CursoService } from './curso.service';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 
 @Controller('cursos')
+@UseGuards(AuthGuard('jwt'))
 export class CursoController {
   constructor(private readonly cursoService: CursoService) {}
 
@@ -24,9 +27,13 @@ export class CursoController {
   }
 
   @Get()
-  findAll(@Query('idInstituicao', ParseIntPipe) idInstituicao?: number) {
+  findAll(@Query('idInstituicao') idInstituicao?: string) {
     if (idInstituicao) {
-      return this.cursoService.findByInstituicao(idInstituicao);
+      const id = parseInt(idInstituicao, 10);
+      if (isNaN(id)) {
+        return this.cursoService.findAll();
+      }
+      return this.cursoService.findByInstituicao(id);
     }
     return this.cursoService.findAll();
   }

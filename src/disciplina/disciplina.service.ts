@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Disciplina } from '../entities/disciplina.entity';
 import { Curso } from '../entities/curso.entity';
 import { Turma } from '../entities/turma.entity';
@@ -38,7 +38,7 @@ export class DisciplinaService {
   /**
    * Cria uma nova disciplina.
    * Valida a fórmula de média e os pesos quando necessário.
-   * RF035 - Verifica que todos os componentes constam na fórmula antes de salvar.
+   * Verifica que todos os componentes constam na fórmula antes de salvar.
    */
   async create(dto: CreateDisciplinaDto) {
     // Busca curso (usa ID 1 por padrão)
@@ -56,22 +56,26 @@ export class DisciplinaService {
       }
       this.validarPesos(dto.pesosJson);
       formulaMedia = `PONDERADA:${dto.pesosJson}`;
-      // RF035: Validação de componentes será feita no update quando componentes forem cadastrados
+      // Validação de componentes será feita no update quando componentes forem cadastrados
       // No create, a disciplina ainda não tem componentes, então não há o que validar
     }
 
     const disciplina = this.disciplinaRepo.create({
       nome: dto.nome.trim(),
       sigla: dto.sigla?.trim() || undefined,
-      codigo: dto.codigo?.trim() || undefined,
       periodo: dto.periodo?.trim() || undefined,
       formulaMedia,
       idCurso: curso.idCurso,
     });
+    
+    // Só adiciona codigo se for fornecido (coluna pode não existir no banco)
+    if (dto.codigo?.trim()) {
+      (disciplina as any).codigo = dto.codigo.trim();
+    }
 
     const disciplinaSalva = await this.disciplinaRepo.save(disciplina);
 
-    // RF035 - Se há componentes já cadastrados e fórmula é PONDERADA, valida
+    // Se há componentes já cadastrados e fórmula é PONDERADA, valida
     if (dto.regra === 'PONDERADA' && dto.pesosJson) {
       const componentes = await this.componenteRepo.find({
         where: { idDisciplina: disciplinaSalva.idDisciplina },
@@ -88,41 +92,82 @@ export class DisciplinaService {
   }
 
   /**
-   * Lista todas as disciplinas.
+   * Lista todas as disciplinas disponíveis.
+   * Disciplinas são globais e não pertencem a professores específicos.
+   * Todos os professores podem ver todas as disciplinas.
    */
-  async findAll() {
-    const disciplinas = await this.disciplinaRepo.find({
-      order: { nome: 'ASC' },
-    });
+  async findAll(idProfessor?: number) {
+    try {
+      console.log('[Disciplina Service] findAll chamado com idProfessor:', idProfessor);
+      
+      // Disciplinas são globais - retorna todas independente do professor
+      // O filtro por professor só é usado para o dashboard (contagem de disciplinas com turmas)
+      const disciplinas = await this.disciplinaRepo.find({
+        order: { nome: 'ASC' },
+      });
+      
+      console.log('[Disciplina Service] Total de disciplinas encontradas:', disciplinas.length);
 
-    return disciplinas.map((d) => ({
-      idDisciplina: d.idDisciplina,
-      nome: d.nome,
-      sigla: d.sigla,
-      codigo: d.codigo,
-      periodo: d.periodo,
-      regra: this.parseRegra(d.formulaMedia).tipo,
-    }));
+      return disciplinas.map((d) => {
+        try {
+          return {
+            idDisciplina: d.idDisciplina,
+            nome: d.nome,
+            sigla: d.sigla || null,
+            codigo: null, // Campo pode não existir no banco
+            periodo: d.periodo || null,
+            regra: this.parseRegra(d.formulaMedia).tipo,
+          };
+        } catch (mapError) {
+          console.error('Erro ao mapear disciplina:', mapError, d);
+          return {
+            idDisciplina: d.idDisciplina,
+            nome: d.nome || 'Sem nome',
+            sigla: null,
+            codigo: null,
+            periodo: null,
+            regra: 'SIMPLES',
+          };
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao buscar disciplinas:', error);
+      throw error;
+    }
   }
 
   /**
    * Busca uma disciplina por ID.
    */
   async findOne(id: number) {
-    const disciplina = await this.disciplinaRepo.findOne({
-      where: { idDisciplina: id },
-    });
+    try {
+      const disciplina = await this.disciplinaRepo
+        .createQueryBuilder('disciplina')
+        .select([
+          'disciplina.idDisciplina',
+          'disciplina.nome',
+          'disciplina.sigla',
+          'disciplina.periodo',
+          'disciplina.formulaMedia',
+        ])
+        .where('disciplina.idDisciplina = :id', { id })
+        .getOne();
 
-    if (!disciplina) {
-      return null;
+      if (!disciplina) {
+        return null;
+      }
+
+      const regra = this.parseRegra(disciplina.formulaMedia);
+      return {
+        ...disciplina,
+        codigo: null, // Campo pode não existir no banco
+        regra: regra.tipo,
+        pesosJson: regra.tipo === 'PONDERADA' ? regra.pesos : undefined,
+      };
+    } catch (error) {
+      console.error('Erro ao buscar disciplina:', error);
+      throw error;
     }
-
-    const regra = this.parseRegra(disciplina.formulaMedia);
-    return {
-      ...disciplina,
-      regra: regra.tipo,
-      pesosJson: regra.tipo === 'PONDERADA' ? regra.pesos : undefined,
-    };
   }
 
   /**
@@ -145,7 +190,7 @@ export class DisciplinaService {
         }
         this.validarPesos(dto.pesosJson);
 
-        // RF035: Valida que todos os componentes cadastrados constam na fórmula
+        // Valida que todos os componentes cadastrados constam na fórmula
         await this.validarComponentesNaFormula(
           disciplina.idDisciplina,
           dto.pesosJson,
@@ -161,8 +206,10 @@ export class DisciplinaService {
     if (dto.nome) disciplina.nome = dto.nome.trim();
     if (dto.sigla !== undefined)
       disciplina.sigla = dto.sigla?.trim() || undefined;
-    if (dto.codigo !== undefined)
-      disciplina.codigo = dto.codigo?.trim() || undefined;
+    // Só atualiza codigo se for fornecido (coluna pode não existir no banco)
+    if (dto.codigo !== undefined && dto.codigo?.trim()) {
+      (disciplina as any).codigo = dto.codigo.trim();
+    }
     if (dto.periodo !== undefined)
       disciplina.periodo = dto.periodo?.trim() || undefined;
 
@@ -171,7 +218,7 @@ export class DisciplinaService {
 
   /**
    * Remove uma disciplina.
-   * RF011 - Impede exclusão se houver turmas vinculadas.
+   * Impede exclusão se houver turmas vinculadas.
    */
   async remove(id: number) {
     const disciplina = await this.disciplinaRepo.findOne({
@@ -224,7 +271,7 @@ export class DisciplinaService {
   }
 
   /**
-   * RF035 - Valida que todos os componentes cadastrados constam na fórmula.
+   * Valida que todos os componentes cadastrados constam na fórmula.
    */
   private async validarComponentesNaFormula(
     idDisciplina: number,
@@ -263,7 +310,7 @@ export class DisciplinaService {
   /**
    * Parseia a fórmula de média armazenada.
    */
-  private parseRegra(formulaMedia?: string): {
+  private parseRegra(formulaMedia?: string | null): {
     tipo: 'SIMPLES' | 'PONDERADA';
     pesos?: string;
   } {
@@ -271,8 +318,13 @@ export class DisciplinaService {
       return { tipo: 'SIMPLES' };
     }
 
-    if (formulaMedia.startsWith('PONDERADA:')) {
-      return { tipo: 'PONDERADA', pesos: formulaMedia.substring(10) };
+    const trimmed = formulaMedia.trim();
+    if (trimmed === '' || trimmed === 'SIMPLES') {
+      return { tipo: 'SIMPLES' };
+    }
+
+    if (trimmed.startsWith('PONDERADA:')) {
+      return { tipo: 'PONDERADA', pesos: trimmed.substring(10) };
     }
 
     return { tipo: 'SIMPLES' };
