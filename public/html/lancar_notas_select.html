@@ -1,0 +1,103 @@
+<!-- PEDRO -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lançar Notas - Selecionar Componente - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/lancar_notas_select.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link active" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Lançar Notas</h1>
+        <p>Selecione o componente de avaliação para lançar as notas</p>
+      </div>
+    </div>
+
+    <div class="card-modern" style="margin-bottom: var(--space-6);">
+      <label for="turmaSelect" style="display: block; font-weight: var(--font-medium); color: var(--gray-700); margin-bottom: var(--space-2); font-size: var(--text-sm);">Selecione a Turma</label>
+      <div class="input-with-icon">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <select id="turmaSelect" style="width: 100%; padding: var(--space-2) var(--space-3) var(--space-2) 2.5rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); font-size: var(--text-sm); background: var(--gray-50); outline: none; transition: all 0.2s ease;">
+          <option value="">Selecione uma turma</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="componentesContainer" style="display: none;">
+      <div class="card-modern">
+        <h2 style="font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--gray-900); margin-bottom: var(--space-2);">Componentes de Avaliação</h2>
+        <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: var(--space-6);" id="disciplinaInfo"></p>
+        
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Sigla</th>
+              <th>Nome</th>
+              <th>Pendências</th>
+              <th style="text-align: center;">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="componentesTable">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: var(--space-8); color: var(--gray-500);">Carregando componentes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="emptyState" class="card-modern" style="text-align: center; padding: var(--space-12);">
+      <svg style="width: 4rem; height: 4rem; margin: 0 auto var(--space-4); color: var(--gray-400);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <p style="font-size: var(--text-base); color: var(--gray-600); margin: 0;">Selecione uma turma para ver os componentes de avaliação</p>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</body>
+</html>
