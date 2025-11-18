@@ -21,18 +21,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadDisciplinas() {
   try {
+    showLoading();
     const disciplinas = await apiGet('/disciplinas');
     const select = document.getElementById('idDisciplina');
-    select.innerHTML = disciplinas.map(d => 
-      `<option value="${d.idDisciplina}">${d.nome}</option>`
+    select.innerHTML = '<option value="">Selecione uma disciplina</option>' + disciplinas.map(d => 
+      `<option value="${d.idDisciplina}">${d.nome}${d.sigla ? ' (' + d.sigla + ')' : ''}</option>`
     ).join('');
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const disciplinaId = urlParams.get('disciplinaId');
+    if (disciplinaId) {
+      select.value = disciplinaId;
+    }
   } catch (error) {
-    showToast('Erro ao carregar disciplinas', 'error');
+    console.error('Erro ao carregar disciplinas:', error);
+    showToast('Erro ao carregar disciplinas: ' + (error.message || 'Erro desconhecido'), 'error');
+  } finally {
+    hideLoading();
   }
 }
 
 async function loadComponente(id) {
   try {
+    showLoading();
     const componente = await apiGet(`/componentes/${id}`);
     if (componente) {
       document.getElementById('idDisciplina').value = componente.idDisciplina;
@@ -40,17 +51,43 @@ async function loadComponente(id) {
       document.getElementById('sigla').value = componente.sigla || '';
     }
   } catch (error) {
-    showToast('Erro ao carregar componente', 'error');
+    console.error('Erro ao carregar componente:', error);
+    showToast('Erro ao carregar componente: ' + (error.message || 'Erro desconhecido'), 'error');
+  } finally {
+    hideLoading();
   }
 }
 
 async function saveComponente(id) {
+  const nomeInput = document.getElementById('nome');
+  const siglaInput = document.getElementById('sigla');
+  const disciplinaSelect = document.getElementById('idDisciplina');
+  
+  // Validações básicas
+  if (!disciplinaSelect.value) {
+    showToast('Selecione uma disciplina', 'error');
+    disciplinaSelect.focus();
+    return;
+  }
+  
+  if (!nomeInput.value.trim()) {
+    showToast('Digite o nome do componente', 'error');
+    nomeInput.focus();
+    return;
+  }
+  
+  if (!siglaInput.value.trim()) {
+    showToast('Digite a sigla do componente', 'error');
+    siglaInput.focus();
+    return;
+  }
+  
   try {
     showLoading();
     const data = {
-      idDisciplina: parseInt(document.getElementById('idDisciplina').value),
-      nome: document.getElementById('nome').value,
-      sigla: document.getElementById('sigla').value,
+      idDisciplina: parseInt(disciplinaSelect.value),
+      nome: nomeInput.value.trim(),
+      sigla: siglaInput.value.trim().toUpperCase(),
     };
 
     if (id) {
@@ -65,8 +102,16 @@ async function saveComponente(id) {
       window.location.href = `/componentes.html?disciplinaId=${data.idDisciplina}`;
     }, 1000);
   } catch (error) {
-    showToast(error.message || 'Erro ao salvar componente', 'error');
+    console.error('Erro ao salvar componente:', error);
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao salvar componente';
+    if (errorMessage.includes('sigla') || errorMessage.includes('duplicad')) {
+      showToast('Já existe um componente com esta sigla nesta disciplina. Escolha outra sigla.', 'error');
+      siglaInput.focus();
+    } else {
+      showToast('Erro: ' + errorMessage, 'error');
+    }
   } finally {
     hideLoading();
   }
 }
+

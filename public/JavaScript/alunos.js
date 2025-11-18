@@ -86,13 +86,9 @@ class AlunosManager {
     return true;
   }
 
-
-  
   isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
-
-
 
   async loadTurmas() {
     try {

@@ -1,3 +1,4 @@
+-- LUCAS
 --Autor: Rafael Gaudencio Dias
 --Descrição: Todo o SQL usado para o projeto
 

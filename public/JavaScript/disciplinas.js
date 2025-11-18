@@ -336,3 +336,4 @@ let disciplinasManager;
 document.addEventListener('DOMContentLoaded', () => {
   disciplinasManager = new DisciplinasManager();
 });
+

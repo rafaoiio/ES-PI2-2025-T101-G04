@@ -91,7 +91,7 @@ async function loadComponentes() {
       <tr>
         <td>
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: var(--font-bold); font-size: var(--text-sm);">
+            <div style="width: 2.5rem; height: 2.5rem; background: var(--bg-gradient-blue-3); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: var(--font-bold); font-size: var(--text-sm);">
               ${c.sigla ? c.sigla.substring(0, 2).toUpperCase() : c.nome.substring(0, 2).toUpperCase()}
             </div>
             <div>
@@ -123,9 +123,24 @@ async function loadComponentes() {
     `).join('');
   } catch (error) {
     console.error('Erro ao carregar componentes:', error);
-    showToast('Erro ao carregar componentes', 'error');
-    document.getElementById('componentesTable').innerHTML = 
-      '<tr><td colspan="3" style="text-align: center; padding: 3rem; color: var(--error);">Erro ao carregar componentes</td></tr>';
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao carregar componentes';
+    showToast('Erro: ' + errorMessage, 'error');
+    const tbody = document.getElementById('componentesTable');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: center; padding: var(--space-8);">
+            <div style="background: var(--error-light); border-left: 4px solid var(--error); padding: var(--space-4); border-radius: var(--radius-md);">
+              <p style="margin: 0 0 var(--space-3); font-weight: var(--font-semibold); color: var(--gray-900);">Erro ao carregar componentes:</p>
+              <p style="margin: 0 0 var(--space-4); color: var(--gray-700); font-size: var(--text-sm);">${errorMessage}</p>
+              <button class="btn-action btn-action-delete" onclick="loadComponentes()" style="padding: var(--space-2) var(--space-4);">
+                Tentar Novamente
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
   } finally {
     hideLoading();
   }
@@ -141,13 +156,14 @@ async function excluirComponente(id) {
     await loadComponentes();
   } catch (error) {
     console.error('Erro ao excluir componente:', error);
-    const errorMessage = error.response?.data?.message || error.message || 'Erro ao excluir componente';
-    if (errorMessage.includes('notas') || errorMessage.includes('vinculado')) {
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao excluir componente';
+    if (errorMessage.includes('notas') || errorMessage.includes('vinculado') || errorMessage.includes('409')) {
       showToast('Não é possível excluir componente que possui notas lançadas', 'error');
     } else {
-      showToast(errorMessage, 'error');
+      showToast('Erro: ' + errorMessage, 'error');
     }
   } finally {
     hideLoading();
   }
 }
+

@@ -21,8 +21,9 @@ export class Disciplina {
   @Column({ name: 'SIGLA', type: 'varchar2', length: 20, nullable: true })
   sigla?: string;
 
-  @Column({ name: 'CODIGO', type: 'varchar2', length: 20, nullable: true })
-  codigo?: string;
+  // Coluna CODIGO removida - não existe no banco de dados
+  // Se necessário, adicione a coluna no banco primeiro com: ALTER TABLE DISCIPLINA ADD CODIGO VARCHAR2(20);
+  // codigo?: string;
 
   @Column({ name: 'PERIODO', type: 'varchar2', length: 20, nullable: true })
   periodo?: string;
@@ -30,11 +31,7 @@ export class Disciplina {
   @Column({ name: 'FORMULA_MEDIA', type: 'clob', nullable: true })
   formulaMedia?: string;
 
-  @Column({
-    name: 'NOTA_FINAL_AJUSTADA_HABILITADA',
-    type: 'number',
-    default: 0,
-    nullable: true,
-  })
-  notaFinalAjustadaHabilitada?: number; // RF037
+  // Coluna NOTA_FINAL_AJUSTADA_HABILITADA removida - não existe no banco de dados
+  // Se necessário, adicione a coluna no banco primeiro com: ALTER TABLE DISCIPLINA ADD NOTA_FINAL_AJUSTADA_HABILITADA NUMBER DEFAULT 0;
+  // notaFinalAjustadaHabilitada?: number;
 }

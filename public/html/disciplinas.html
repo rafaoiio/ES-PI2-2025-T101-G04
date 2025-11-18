@@ -20,15 +20,20 @@
     <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
       <a class="navbar-brand" href="/index.html">
         <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3z"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
         </svg>
         NotaDez
       </a>
       <ul class="navbar-nav">
         <li><a class="nav-link" href="/index.html">Dashboard</a></li>
         <li><a class="nav-link active" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
         <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
         <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/notas.html">Notas</a></li>
         <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
         <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
       </ul>
@@ -164,7 +169,7 @@
     <div class="modal-container" style="max-width: 500px;">
       <div class="modal-header">
         <h2>
-          <div class="modal-header-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+          <div class="modal-header-icon" style="background: linear-gradient(135deg, var(--primary-700), var(--primary-800));">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -198,7 +203,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="modal-btn modal-btn-cancel">Cancelar</button>
-        <button type="button" class="modal-btn modal-btn-submit" onclick="disciplinasManager.deleteDisciplina()" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+        <button type="button" class="modal-btn modal-btn-submit" onclick="disciplinasManager.deleteDisciplina()" style="background: linear-gradient(135deg, var(--primary-700), var(--primary-800));">
           <span class="btn-text">Sim, Excluir</span>
           <div class="modal-btn-spinner" style="display: none;"></div>
         </button>
