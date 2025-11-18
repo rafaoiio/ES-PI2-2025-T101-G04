@@ -1,3 +1,4 @@
+// VITOR
 // Autor: Rafael Gaudencio Dias
 //Descrição: Controller da API (prefixo /api)
 // Observação: requer instalação dos pacotes "express" e "@types/express" para uso do decorador @Res()

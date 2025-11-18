@@ -1,0 +1,94 @@
+<!-- VITOR -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Primeiro Acesso - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/primeiro-acesso.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/instituicoes.html">Instituições</a></li>
+        <li><a class="nav-link" href="/cursos.html">Cursos</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Configuração Inicial</h1>
+        <p>Para começar, cadastre uma instituição e um curso</p>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div style="margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--text-xl); font-weight: var(--font-semibold); color: var(--gray-900); margin-bottom: var(--space-4);">
+          Configuração Necessária
+        </h2>
+        <p style="color: var(--gray-600); margin-bottom: var(--space-4);">
+          Antes de usar o sistema, você precisa cadastrar:
+        </p>
+        <ul style="list-style: disc; padding-left: var(--space-6); color: var(--gray-700);">
+          <li style="margin-bottom: var(--space-2);">Pelo menos uma <strong>Instituição</strong></li>
+          <li style="margin-bottom: var(--space-2);">Pelo menos um <strong>Curso</strong></li>
+        </ul>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin-top: var(--space-6);">
+        <a href="/instituicoes.html" class="btn-primary" style="text-decoration: none; text-align: center; padding: var(--space-4); border-radius: var(--radius-lg);">
+          <svg style="width: 1.5rem; height: 1.5rem; margin-bottom: var(--space-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+          </svg>
+          <div style="font-weight: var(--font-semibold);">Cadastrar Instituição</div>
+        </a>
+        <a href="/cursos.html" class="btn-primary" style="text-decoration: none; text-align: center; padding: var(--space-4); border-radius: var(--radius-lg);">
+          <svg style="width: 1.5rem; height: 1.5rem; margin-bottom: var(--space-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <div style="font-weight: var(--font-semibold);">Cadastrar Curso</div>
+        </a>
+      </div>
+
+      <div style="margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--gray-200);">
+        <button id="checkAgainBtn" class="btn-secondary" style="width: 100%;">
+          Verificar Novamente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+</body>
+</html>
+

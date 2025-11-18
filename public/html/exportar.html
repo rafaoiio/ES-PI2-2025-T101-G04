@@ -1,0 +1,126 @@
+<!-- VITOR -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exportar Notas - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/exportar.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link active" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1>Exportar Notas</h1>
+        <p>Exporte as notas finais da turma em formato CSV ou JSON</p>
+      </div>
+      <a href="/notas.html" class="btn-secondary" style="text-decoration: none;">
+        ← Voltar para Notas
+      </a>
+    </div>
+
+    <div class="card-modern" style="margin-bottom: var(--space-6);">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4);">
+        <div>
+          <label for="disciplinaSelect" style="display: block; font-weight: var(--font-medium); color: var(--gray-700); margin-bottom: var(--space-2); font-size: var(--text-sm);">Disciplina</label>
+          <div class="input-with-icon">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <select id="disciplinaSelect" style="width: 100%; padding: var(--space-2) var(--space-3) var(--space-2) 2.5rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); font-size: var(--text-sm); background: var(--gray-50); outline: none; transition: all 0.2s ease;">
+              <option value="">Selecione uma disciplina</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="turmaSelect" style="display: block; font-weight: var(--font-medium); color: var(--gray-700); margin-bottom: var(--space-2); font-size: var(--text-sm);">Turma</label>
+          <div class="input-with-icon">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <select id="turmaSelect" style="width: 100%; padding: var(--space-2) var(--space-3) var(--space-2) 2.5rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); font-size: var(--text-sm); background: var(--gray-50); outline: none; transition: all 0.2s ease;">
+              <option value="">Selecione uma turma</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-modern" id="alertPendencias" style="display: none; background: var(--warning-light); border-left: 4px solid var(--warning-600); margin-bottom: var(--space-6);">
+      <h3 style="font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--gray-900); margin-bottom: var(--space-3);">Pendências Encontradas</h3>
+      <p style="font-size: var(--text-sm); color: var(--gray-700); margin-bottom: var(--space-2);">Não é possível exportar enquanto houver notas pendentes:</p>
+      <ul id="listaPendencias" style="margin: 0; padding-left: var(--space-6); font-size: var(--text-sm); color: var(--gray-700);"></ul>
+    </div>
+
+    <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-8); flex-wrap: wrap;">
+      <button class="btn-primary" onclick="exportarCSV()" id="btnExportarCSV" style="flex: 1; min-width: 200px; border: none; cursor: pointer;">
+        <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Exportar CSV
+      </button>
+      <button class="btn-primary" onclick="exportarJSON()" id="btnExportarJSON" style="flex: 1; min-width: 200px; border: none; cursor: pointer; background: var(--bg-gradient-blue-2);">
+        <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Exportar JSON
+      </button>
+    </div>
+
+    <div class="card-modern">
+      <h2 style="font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--gray-900); margin-bottom: var(--space-4);">Informações sobre a Exportação</h2>
+      <ul style="margin: 0; padding-left: var(--space-6); color: var(--gray-700); font-size: var(--text-sm); line-height: 1.8;">
+        <li>Os arquivos serão baixados automaticamente</li>
+        <li>O nome do arquivo seguirá o padrão: <code style="background: var(--gray-100); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-family: var(--font-family-mono); font-size: var(--text-xs);">YYYYMMDD_HHmmss-TURMA-SIGLA.csv/json</code></li>
+        <li>O arquivo contém: RA, Nome, Notas por Componente, Nota Final e Nota Final Ajustada (se habilitada)</li>
+        <li>Valores numéricos usam vírgula como separador decimal (CSV)</li>
+        <li>Notas pendentes aparecem como "—" no arquivo</li>
+        <li>Exportação disponível em CSV e JSON</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</body>
+</html>
