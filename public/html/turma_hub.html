@@ -1,0 +1,157 @@
+<!-- RAFAEL - PADRONIZADO -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hub da Turma - NotaDez</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/env.js"></script>
+  <script src="/js/auth-check.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/JavaScript/turma_hub.js" defer></script>
+</head>
+<body class="internal-page">
+  <nav class="navbar-modern">
+    <div class="container-modern" style="display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); padding-bottom: var(--space-4);">
+      <a class="navbar-brand" href="/index.html">
+        <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+        NotaDez
+      </a>
+      <ul class="navbar-nav">
+        <li><a class="nav-link" href="/index.html">Dashboard</a></li>
+        <li><a class="nav-link" href="/disciplinas.html">Disciplinas</a></li>
+        <li><a class="nav-link" href="/componentes.html">Componentes</a></li>
+        <li><a class="nav-link active" href="/turmas.html">Turmas</a></li>
+        <li><a class="nav-link" href="/alunos.html">Alunos</a></li>
+        <li><a class="nav-link" href="/notas.html">Notas</a></li>
+        <li><a class="nav-link" href="/perfil.html">Perfil</a></li>
+        <li><a class="nav-link" href="#" onclick="logout(); return false;" style="color: var(--error);">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-modern">
+    <div class="page-header">
+      <div>
+        <h1 id="turmaNome">Hub da Turma</h1>
+        <p id="turmaDisciplina">Carregando informações...</p>
+      </div>
+      <div class="page-actions">
+        <a href="/turmas.html" class="btn-secondary">
+          <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12,19 5,12 12,5"/>
+          </svg>
+          Voltar para Turmas
+        </a>
+      </div>
+    </div>
+
+    <!-- Card de Estatísticas -->
+    <div class="stats-grid" style="margin-bottom: var(--space-8);">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: var(--bg-gradient-blue-2);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3 id="totalAlunos">0</h3>
+          <p>Total de Alunos</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Componentes de Avaliação -->
+    <div class="card-modern" style="margin-bottom: var(--space-8);">
+      <div class="card-header-modern">
+        <div>
+          <h2 style="font-size: var(--text-xl); font-weight: 600; color: var(--gray-900); margin: 0;">Componentes de Avaliação</h2>
+          <p style="font-size: var(--text-sm); color: var(--gray-600); margin: 0;">Acompanhe o progresso das avaliações</p>
+        </div>
+      </div>
+      <div class="card-body-modern">
+        <div class="table-container">
+          <table class="table-modern">
+            <thead>
+              <tr>
+                <th>Sigla</th>
+                <th>Nome</th>
+                <th>Peso</th>
+                <th>Pendências</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="componentesTable">
+              <tr>
+                <td colspan="5" class="text-center" style="padding: var(--space-8); color: var(--gray-500);">
+                  <div class="loading-spinner-small" style="margin: 0 auto;"></div>
+                  <p style="margin-top: var(--space-4);">Carregando componentes...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="card-modern">
+      <div class="card-header-modern">
+        <h2 style="font-size: var(--text-xl); font-weight: 600; color: var(--gray-900); margin: 0;">Ações Rápidas</h2>
+      </div>
+      <div class="card-body-modern">
+        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+          <a href="#" id="btnGerenciarAlunos" class="btn-secondary">
+            <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Gerenciar Alunos
+          </a>
+          <a href="#" id="btnLancarNotas" class="btn-primary">
+            <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Lançar Notas
+          </a>
+          <a href="#" id="btnNotasFinais" class="btn-secondary">
+            <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+            Ver Notas Finais
+          </a>
+          <a href="#" id="btnExportar" class="btn-secondary">
+            <svg style="width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7,10 12,15 17,10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Exportar CSV
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificações -->
+  <div id="toast-container"></div>
+</body>
+</html>
