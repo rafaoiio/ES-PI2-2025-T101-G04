@@ -1,0 +1,509 @@
+/* LAURA */
+/* CSS de Autenticação - Extensão do Sistema de Design */
+
+/* ===== ESTILOS ESPECÍFICOS DE AUTENTICAÇÃO ===== */
+
+/* Loading Spinner no botão */
+.btn-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+.btn-text.hidden,
+.btn-spinner.hidden {
+  display: none;
+}
+
+/* ===== FORMULÁRIOS DE CADASTRO AVANÇADOS ===== */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Select estilizado */
+.input-with-icon select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--space-3) center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+/* Textarea estilizado */
+.input-with-icon textarea {
+  resize: vertical;
+  min-height: 4rem;
+  line-height: 1.5;
+}
+
+/* ===== VALIDAÇÃO VISUAL ===== */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-group.error .error-message {
+  display: block;
+  color: var(--error);
+  font-size: var(--text-xs);
+  margin-top: var(--space-1);
+}
+
+.error-message {
+  display: none;
+}
+
+/* ===== TABS DE AUTENTICAÇÃO ===== */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+.auth-tab {
+  flex: 1;
+  padding: var(--space-4);
+  border: none;
+  background: none;
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: var(--font-medium);
+  position: relative;
+}
+
+.auth-tab.active {
+  color: var(--primary-600);
+  background: white;
+}
+
+.auth-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-600);
+}
+
+.auth-tab:hover:not(.active) {
+  color: var(--gray-900);
+  background: var(--gray-100);
+}
+
+/* ===== MELHORIAS DE UX/UI ===== */
+
+/* Efeito de hover sutil em cards */
+.auth-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Garantir que os estados não quebrem o layout */
+#loading-state,
+#error-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+#login-state {
+  position: relative;
+  z-index: 1;
+}
+
+/* Inputs com melhor feedback tátil */
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.input-with-icon textarea:focus {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+/* Botões com micro-interações */
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Links com underline animado */
+.forgot-link,
+.register-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.forgot-link::after,
+.register-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.2s ease;
+}
+
+.forgot-link:hover::after,
+.register-link:hover::after {
+  width: 100%;
+}
+
+/* ===== RESPONSIVIDADE AVANÇADA ===== */
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-tabs {
+    flex-direction: column;
+  }
+
+  .auth-tab {
+    text-align: center;
+  }
+
+  .auth-tab.active::after {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+  }
+}
+
+/* ===== ANIMAÇÕES DE ESTADO ===== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading pulsante */
+.loading-spinner {
+  animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+/* ===== ACESSIBILIDADE AVANÇADA ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus melhorado para navegação por teclado */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-danger:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* ===== COMPONENTES ESPECIAIS ===== */
+
+/* Card de loading elegante */
+.loading-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Skeleton loading para placeholders */
+.skeleton {
+  background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Badge de status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 9999px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+.status-badge.success {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.status-badge.warning {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.status-badge.error {
+  background: var(--error-light);
+  color: var(--error);
+}
+
+/* ===== MELHORIAS DE PERFORMANCE ===== */
+.auth-container,
+.auth-card,
+.auth-form {
+  will-change: transform;
+}
+
+.input-with-icon input,
+.btn-primary {
+  will-change: transform, background-color;
+}
+
+/* Hardware acceleration para animações suaves */
+.loading-spinner,
+.btn-spinner {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ===== INDICADOR DE FORÇA DA SENHA ===== */
+.password-strength {
+  margin-top: var(--space-2);
+}
+
+.strength-meter {
+  width: 100%;
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: var(--space-1);
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.strength-fill.weak {
+  width: 33%;
+  background: var(--error);
+}
+
+.strength-fill.medium {
+  width: 66%;
+  background: var(--warning);
+}
+
+.strength-fill.strong {
+  width: 100%;
+  background: var(--success);
+}
+
+.strength-text {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+.strength-text.weak {
+  color: var(--error);
+}
+
+.strength-text.medium {
+  color: var(--warning);
+}
+
+.strength-text.strong {
+  color: var(--success);
+}
+
+/* ===== CHECKBOX PERSONALIZADO ===== */
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--gray-700);
+  position: relative;
+}
+
+.checkbox-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkmark {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: '';
+  width: 0.5rem;
+  height: 0.75rem;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-label:hover .checkmark {
+  border-color: var(--primary-400);
+}
+
+.terms-link {
+  color: var(--primary-600);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== VALIDAÇÃO EM TEMPO REAL ===== */
+.form-group.valid input,
+.form-group.valid select {
+  border-color: var(--success);
+}
+
+.form-group.invalid input,
+.form-group.invalid select {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-group.valid::after {
+  content: '✓';
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--success);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.form-group.invalid::after {
+  content: '!';
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--error);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  background: white;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== ANIMAÇÕES DE VALIDAÇÃO ===== */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ===== RESPONSIVIDADE PARA CADASTRO ===== */
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .checkbox-label {
+    font-size: var(--text-xs);
+    line-height: 1.4;
+  }
+
+  .password-strength {
+    margin-top: var(--space-1);
+  }
+
+  .strength-meter {
+    height: 3px;
+  }
+}
+
+/* ===== MELHORIAS DE PERFORMANCE ===== */
+.password-strength,
+.strength-meter,
+.strength-fill {
+  will-change: width, background-color;
+}
+
+.checkbox-label,
+.checkmark {
+  will-change: background-color, border-color;
+}

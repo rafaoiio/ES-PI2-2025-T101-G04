@@ -1,44 +1,133 @@
-//Autor Rafael Gaudencio Dias
-// Descrição: Pasta criada para gerenciar a lógica de autenticação, validando login, senha e gerando tokens de acesso seguros para os usuários.
-
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+// LAURA
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { UsersService } from '../users/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { PasswordResetToken } from '../entities/password-reset-token.entity';
+import * as crypto from 'crypto';
 
-@Injectable() // posso injetar em outros arquivos como dependência
+@Injectable()
 export class AuthService {
-  // crio a classe principal responsável pela lógica de autenticação
-  constructor(private users: UsersService, private jwt: JwtService) {}
-  // recebo o serviço de usuário(para buscar no banco) e o serviço JWT para gerar o token
+  constructor(
+    private users: UsersService,
+    private jwt: JwtService,
+    @InjectRepository(PasswordResetToken)
+    private tokenRepo: Repository<PasswordResetToken>,
+  ) {}
 
   async validaoUsuario(email: string, senha: string) {
-    // verifico se o usuário e senha estão corretos
     const user = await this.users.findByEmail(email);
-    // busco pelo email o usuário no banco
-    if (!user) throw new UnauthorizedException('Credenciais inválidas');
-    // se não encontrar lança o erro de acesso negado
+    if (!user) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
 
+    const senhaValida = await bcrypt.compare(senha, user.senha);
+    if (!senhaValida) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
 
-    const ok = await bcrypt.compare(senha, user.senha);
-    //comparo a senha que foi digitada com o hash salvo no banco
-    if (!ok) throw new UnauthorizedException('Credenciais inválidas');
-    // se tiver errado também bloqueio a entrada
-
-    const { passwordHash, ...safe } = user as any;
-    // aqui removo o campo da senha antes de retornar os dados
+    const { senha: _, ...safe } = user as any;
     return safe;
   }
 
-  async login(user: any)
-  // função que gera o token de acesso para o usuário autenticado
-   {
+  async login(user: any) {
     const payload = { sub: user.id, email: user.email, name: user.nome };
-    // crio os dados que serão gravados dentro do token 
     return {
       accessToken: await this.jwt.signAsync(payload),
       user,
-      // Gero o token JWT e o devolve junto com os dados do usuário
     };
+  }
+
+  async getUserById(id: number) {
+    return this.users.findOne(id);
+  }
+
+  /**
+   * Gera token de recuperação de senha e envia email.
+   */
+  async forgotPassword(email: string) {
+    const user = await this.users.findByEmail(email);
+    if (!user) {
+      // Por segurança, não revela se o email existe ou não
+      return { message: 'Se o email existir, um link de recuperação será enviado.' };
+    }
+
+    // Gera token único
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1); // Token válido por 1 hora
+
+    // Invalida tokens anteriores não usados
+    await this.tokenRepo.update(
+      { idProfessor: user.id, used: 0 },
+      { used: 1 },
+    );
+
+    // Cria novo token
+    const resetToken = this.tokenRepo.create({
+      idProfessor: user.id,
+      token,
+      expiresAt,
+      used: 0,
+    });
+    await this.tokenRepo.save(resetToken);
+
+    // Gera link de recuperação
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+
+    // TODO: Integrar com serviço de email real
+    // Por enquanto, apenas loga (em desenvolvimento)
+    console.log(`\n=== LINK DE RECUPERAÇÃO DE SENHA ===`);
+    console.log(`Email: ${email}`);
+    console.log(`Link: ${resetLink}`);
+    console.log(`Token: ${token}`);
+    console.log(`Expira em: ${expiresAt.toLocaleString('pt-BR')}`);
+    console.log(`=====================================\n`);
+
+    return { message: 'Se o email existir, um link de recuperação será enviado.' };
+  }
+
+  /**
+   * Redefine senha usando token válido.
+   */
+  async resetPassword(token: string, novaSenha: string) {
+    const resetToken = await this.tokenRepo.findOne({
+      where: { token },
+      relations: ['professor'],
+    });
+
+    if (!resetToken) {
+      throw new NotFoundException('Token inválido ou expirado');
+    }
+
+    if (resetToken.used === 1) {
+      throw new BadRequestException('Token já foi utilizado');
+    }
+
+    if (new Date() > resetToken.expiresAt) {
+      throw new BadRequestException('Token expirado');
+    }
+
+    // Valida nova senha
+    if (!novaSenha || novaSenha.length < 6) {
+      throw new BadRequestException('Senha deve ter no mínimo 6 caracteres');
+    }
+
+    // Atualiza senha do usuário
+    const senhaHash = await bcrypt.hash(novaSenha, 10);
+    await this.users.updatePassword(resetToken.idProfessor, senhaHash);
+
+    // Marca token como usado
+    resetToken.used = 1;
+    await this.tokenRepo.save(resetToken);
+
+    return { message: 'Senha redefinida com sucesso' };
   }
 }

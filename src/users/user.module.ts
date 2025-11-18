@@ -1,9 +1,10 @@
+// LAURA
 //Autor Rafael Gaudencio Dias
 //Descrição: Módulo que reúne tudo do usuário — entidade, serviço e rotas — e disponibiliza essas funções para o restante do sistema.
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Professor } from './user.entity';
+import { Professor } from '../entities/professor.entity';
 import { UsersService } from './user.service';
 import { UsersController } from './user.controller';
 
@@ -14,7 +15,7 @@ import { UsersController } from './user.controller';
   // O UserService contém a lógica dos usuários
   controllers: [UsersController],
   // Define as rotas de /users
-  exports: [UsersService]
+  exports: [UsersService],
   //permito que outros módulos usem o UserService
 })
 export class UsersModule {}
