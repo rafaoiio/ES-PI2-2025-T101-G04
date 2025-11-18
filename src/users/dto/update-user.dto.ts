@@ -1,17 +1,20 @@
 // LAURA
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
-export class CreateProfessorDto {
+export class UpdateProfessorDto {
+  @IsOptional()
   @IsString()
   @MinLength(2)
-  nome: string;
+  nome?: string;
 
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(6)
-  senha: string;
+  senha?: string;
 
   @IsOptional()
   @IsString()

@@ -1,104 +1,154 @@
-//Autor Rafael Gaudencio Dias
-//Descrição: Serviço responsável por todas as ações com usuários: criar, buscar, listar e remover, 
-// além de validar duplicações e proteger dados sensíveis como a senha.
-
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+// LAURA
+/**
+ * Serviço responsável pelas operações CRUD de Usuários (Professores).
+ *
+ * Gerencia criação, busca, atualização e remoção de usuários.
+ * Protege dados sensíveis (senha) e valida duplicações de email.
+ */
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
-import { Professor } from './user.entity';
+import * as bcrypt from 'bcrypt';
+import { Professor } from '../entities/professor.entity';
 import { CreateProfessorDto } from './dto/create-user.dto';
+import { UpdateProfessorDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(Professor) private repo: Repository<Professor>)
-  //permite que eu use a tabela User no banco
-  {}
+  constructor(
+    @InjectRepository(Professor)
+    private repo: Repository<Professor>,
+  ) {}
 
-  
-  findAllPublic() 
-  //retorna apenas campos públicos
-  {
+  /**
+   * Lista todos os usuários retornando apenas campos públicos.
+   */
+  findAllPublic() {
     return this.repo.find({
-      select: 
-      { 
-        id: true, 
-        nome: true, 
-        email: true, 
-        telefone: true, 
-        createdAt: true, 
-        updatedAt: true 
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        telefone: true,
       },
-        order: { id: 'DESC' },
+      order: { id: 'DESC' },
     });
-    // Peço ao TypeOrm para buscar todos os usuários, mostrando apenas os campos listados acima
   }
 
+  /**
+   * Busca um usuário por ID retornando apenas campos públicos.
+   */
   async findOnePublic(id: number) {
     return this.repo.findOne({
       where: { id },
-      select: { id: true, nome: true, email: true, createdAt: true, updatedAt: true },
+      select: { id: true, nome: true, email: true, telefone: true },
     });
-
-    //Retorno apenas um usuário pelo Id, retornando apenas os campos públicos
   }
 
+  /**
+   * Lista todos os usuários (uso interno - retorna senha também).
+   */
   findAll() {
     return this.repo.find();
-    // Uso só internamente pois retorna a senha também
   }
 
+  /**
+   * Busca um usuário por ID.
+   */
   async findOne(id: number) {
     return this.repo.findOne({ where: { id } });
-    // Busco um usuário pelo id
   }
 
+  /**
+   * Busca um usuário por email.
+   */
   async findByEmail(email: string) {
     return this.repo.findOne({ where: { email } });
-    // Busco um usuário pelo email
   }
 
+  /**
+   * Cria um novo usuário.
+   * Valida duplicação de email e criptografa a senha.
+   */
   async create(dto: CreateProfessorDto): Promise<Partial<Professor>> {
-    //crio um novo usuário a partir dos dados cadastrados
-
-
     const exists = await this.findByEmail(dto.email);
-    if (exists) throw new ConflictException('E-mail já cadastrado');
-    // Verifico se o email já existe e se sim ele impede o cadastro
-
-    try {
-      const senhaHash = await bcrypt.hash(dto.senha, 10);
-      const professor = this.repo.create({
-        nome: dto.nome,
-        email: dto.email,
-        senha: senhaHash,
-        telefone:dto.telefone,
-      });
-      // Criptografo a senha com o bcrypt e nunca salvo a senha real
-
-      const salvo = await this.repo.save(professor);
-      // salfvo o novo usuário no banco
-
-      const { senha: _, ...pub } = salvo as any;
-      return pub;
-      // Removo o campo da senha e devolvo só os dados públicos
-
-    } catch (e: any) {
-      // Mapeia erros comuns do Oracle
-      if (e?.code === 'ORA-00001') throw new ConflictException('E-mail já cadastrado'); // unique
-      if (e?.code === 'ORA-00942') throw new InternalServerErrorException('Tabela USERS não existe. Rode as migrations.');
-      console.error('ERRO create(user):', e);
-      throw new InternalServerErrorException('Falha ao salvar usuário');
-
-      // Alguns erros que podem dar, retorno tudo claramente ao usuário
+    if (exists) {
+      throw new ConflictException('E-mail já cadastrado');
     }
+
+    const senhaHash = await bcrypt.hash(dto.senha, 10);
+    const professor = this.repo.create({
+      nome: dto.nome,
+      email: dto.email,
+      senha: senhaHash,
+      telefone: dto.telefone,
+    });
+
+    const salvo = await this.repo.save(professor);
+    const { senha: _, ...pub } = salvo as any;
+    return pub;
   }
 
+  /**
+   * Atualiza um usuário existente.
+   * Valida duplicação de email se estiver sendo alterado.
+   */
+  async update(
+    id: number,
+    dto: UpdateProfessorDto,
+  ): Promise<Partial<Professor>> {
+    const user = await this.repo.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    if (dto.email && dto.email !== user.email) {
+      const exists = await this.findByEmail(dto.email);
+      if (exists) {
+        throw new ConflictException('E-mail já cadastrado');
+      }
+    }
+
+    if (dto.nome) user.nome = dto.nome;
+    if (dto.email) user.email = dto.email;
+    if (dto.telefone !== undefined) user.telefone = dto.telefone;
+
+    if (dto.senha) {
+      user.senha = await bcrypt.hash(dto.senha, 10);
+    }
+
+    const atualizado = await this.repo.save(user);
+    const { senha: _, ...pub } = atualizado as any;
+    return pub;
+  }
+
+  /**
+   * Remove um usuário.
+   */
   async remove(id: number) {
     const user = await this.repo.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
     await this.repo.delete(id);
     return { deleted: true };
   }
-  // Apago um usuário pelo Id, verificando se ele existe, deleto e retorno uma confirmação
+
+  /**
+   * Atualiza apenas a senha do usuário.
+   * Usado para recuperação de senha.
+   */
+  async updatePassword(id: number, senhaHash: string) {
+    const user = await this.repo.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+    user.senha = senhaHash;
+    await this.repo.save(user);
+  }
 }
