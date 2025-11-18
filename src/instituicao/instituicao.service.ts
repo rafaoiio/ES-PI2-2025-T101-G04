@@ -59,7 +59,7 @@ export class InstituicaoService {
 
   /**
    * Remove uma instituição.
-   * RF010 - Impede exclusão se houver cursos, disciplinas ou turmas vinculadas.
+   * Impede exclusão se houver cursos, disciplinas ou turmas vinculadas.
    */
   async remove(id: number) {
     const instituicao = await this.findOne(id);
