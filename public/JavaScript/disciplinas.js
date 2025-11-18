@@ -328,6 +328,10 @@ class DisciplinasManager {
   verDetalhes(id) {
     window.location.href = `/componentes.html?disciplinaId=${id}`;
   }
+
+  openDeleteModal(id, nome) {
+    this.confirmDelete(id, nome);
+  }
 }
 
 // Inicializa quando o DOM estiver pronto

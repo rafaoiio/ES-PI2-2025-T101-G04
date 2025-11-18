@@ -67,3 +67,5 @@ async function saveDisciplina(id) {
   } finally {
     hideLoading();
   }
+}
+
