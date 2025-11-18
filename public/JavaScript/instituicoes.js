@@ -3,6 +3,8 @@
 
 let instituicoes = [];
 let editingId = null;
+let modal = null;
+let deleteModal = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
@@ -10,72 +12,60 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupEventListeners() {
+  // Modal principal
+  modal = createModal('institutionModal');
+  
+  // Modal de exclusão
+  deleteModal = createModal('deleteModal');
+  
+  // Botões de adicionar
   const addBtn = document.getElementById('addInstitutionBtn');
+  const addBtnEmpty = document.getElementById('addInstitutionBtnEmpty');
+  
   if (addBtn) {
     addBtn.addEventListener('click', () => showModal());
   }
+  
+  if (addBtnEmpty) {
+    addBtnEmpty.addEventListener('click', () => showModal());
+  }
 
+  // Formulário
   const form = document.getElementById('institutionForm');
   if (form) {
     form.addEventListener('submit', handleSubmit);
   }
 
-  const menuToggle = document.getElementById('menuToggle');
-  if (menuToggle) {
-    menuToggle.addEventListener('click', toggleSidebar);
-  }
-
+  // Busca
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', filterInstituicoes);
   }
 }
 
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar) {
-    sidebar.classList.toggle('collapsed');
-  }
-}
-
 async function loadInstituicoes() {
   try {
-    showLoadingState();
+    showLoading();
     
-    const response = await fetch(`${API_BASE_URL}/instituicoes`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('notadez_token')}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao carregar instituições');
-    }
-
-    instituicoes = await response.json();
+    instituicoes = await apiGet('/instituicoes');
     renderInstituicoes();
   } catch (error) {
     console.error('Erro ao carregar instituições:', error);
-    showToast('Erro ao carregar instituições', 'error');
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao carregar instituições';
+    showToast('Erro: ' + errorMessage, 'error');
+    
+    const loadingState = document.getElementById('loadingState');
+    const content = document.getElementById('institutionsContent');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
   } finally {
-    hideLoadingState();
+    hideLoading();
+    
+    const loadingState = document.getElementById('loadingState');
+    const content = document.getElementById('institutionsContent');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
   }
-}
-
-function showLoadingState() {
-  const loadingState = document.getElementById('loadingState');
-  const content = document.getElementById('institutionsContent');
-  
-  if (loadingState) loadingState.classList.remove('hidden');
-  if (content) content.classList.add('hidden');
-}
-
-function hideLoadingState() {
-  const loadingState = document.getElementById('loadingState');
-  const content = document.getElementById('institutionsContent');
-  
-  if (loadingState) loadingState.classList.add('hidden');
-  if (content) content.classList.remove('hidden');
 }
 
 function renderInstituicoes() {
@@ -93,30 +83,38 @@ function renderInstituicoes() {
   if (emptyState) emptyState.classList.add('hidden');
 
   grid.innerHTML = instituicoes.map(inst => `
-    <div class="institution-card">
-      <div class="institution-card-header">
-        <h3>${escapeHtml(inst.nome)}</h3>
-        <div class="institution-actions">
-          <button class="btn-icon" onclick="editInstituicao(${inst.idInstituicao})" title="Editar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="card-modern" style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="flex: 1;">
+          <h3 style="font-size: var(--text-xl); font-weight: var(--font-semibold); color: var(--gray-900); margin: 0 0 var(--space-2);">
+            ${escapeHtml(inst.nome)}
+          </h3>
+          ${inst.endereco ? `<p style="color: var(--gray-600); font-size: var(--text-sm); margin: 0 0 var(--space-3);">
+            <svg style="width: 1rem; height: 1rem; vertical-align: middle; margin-right: var(--space-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            ${escapeHtml(inst.endereco)}
+          </p>` : ''}
+        </div>
+        <div style="display: flex; gap: var(--space-2);">
+          <button class="action-btn-table action-btn-edit-table" onclick="editInstituicao(${inst.idInstituicao})" title="Editar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
           </button>
-          <button class="btn-icon btn-danger" onclick="deleteInstituicao(${inst.idInstituicao})" title="Excluir">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3,6 5,6 21,6"/>
+          <button class="action-btn-table action-btn-delete-table" onclick="deleteInstituicao(${inst.idInstituicao})" title="Excluir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
           </button>
         </div>
       </div>
-      <div class="institution-card-body">
-        ${inst.endereco ? `<p><strong>Endereço:</strong> ${escapeHtml(inst.endereco)}</p>` : ''}
-        ${inst.descricao ? `<p>${escapeHtml(inst.descricao)}</p>` : ''}
-      </div>
-      <div class="institution-card-footer">
-        <button class="btn-secondary btn-sm" onclick="viewCursos(${inst.idInstituicao})">
+      ${inst.descricao ? `<p style="color: var(--gray-700); font-size: var(--text-sm); margin: 0; line-height: 1.6;">${escapeHtml(inst.descricao)}</p>` : ''}
+      <div style="display: flex; gap: var(--space-3); margin-top: var(--space-2);">
+        <button class="btn-secondary" onclick="viewCursos(${inst.idInstituicao})" style="flex: 1;">
           Ver Cursos
         </button>
       </div>
@@ -131,7 +129,8 @@ function filterInstituicoes() {
   const searchTerm = searchInput.value.toLowerCase();
   const filtered = instituicoes.filter(inst => 
     inst.nome.toLowerCase().includes(searchTerm) ||
-    (inst.endereco && inst.endereco.toLowerCase().includes(searchTerm))
+    (inst.endereco && inst.endereco.toLowerCase().includes(searchTerm)) ||
+    (inst.descricao && inst.descricao.toLowerCase().includes(searchTerm))
   );
 
   const grid = document.getElementById('institutionsGrid');
@@ -148,30 +147,38 @@ function filterInstituicoes() {
   if (emptyState) emptyState.classList.add('hidden');
 
   grid.innerHTML = filtered.map(inst => `
-    <div class="institution-card">
-      <div class="institution-card-header">
-        <h3>${escapeHtml(inst.nome)}</h3>
-        <div class="institution-actions">
-          <button class="btn-icon" onclick="editInstituicao(${inst.idInstituicao})" title="Editar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="card-modern" style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="flex: 1;">
+          <h3 style="font-size: var(--text-xl); font-weight: var(--font-semibold); color: var(--gray-900); margin: 0 0 var(--space-2);">
+            ${escapeHtml(inst.nome)}
+          </h3>
+          ${inst.endereco ? `<p style="color: var(--gray-600); font-size: var(--text-sm); margin: 0 0 var(--space-3);">
+            <svg style="width: 1rem; height: 1rem; vertical-align: middle; margin-right: var(--space-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            ${escapeHtml(inst.endereco)}
+          </p>` : ''}
+        </div>
+        <div style="display: flex; gap: var(--space-2);">
+          <button class="action-btn-table action-btn-edit-table" onclick="editInstituicao(${inst.idInstituicao})" title="Editar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
           </button>
-          <button class="btn-icon btn-danger" onclick="deleteInstituicao(${inst.idInstituicao})" title="Excluir">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3,6 5,6 21,6"/>
+          <button class="action-btn-table action-btn-delete-table" onclick="deleteInstituicao(${inst.idInstituicao})" title="Excluir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
           </button>
         </div>
       </div>
-      <div class="institution-card-body">
-        ${inst.endereco ? `<p><strong>Endereço:</strong> ${escapeHtml(inst.endereco)}</p>` : ''}
-        ${inst.descricao ? `<p>${escapeHtml(inst.descricao)}</p>` : ''}
-      </div>
-      <div class="institution-card-footer">
-        <button class="btn-secondary btn-sm" onclick="viewCursos(${inst.idInstituicao})">
+      ${inst.descricao ? `<p style="color: var(--gray-700); font-size: var(--text-sm); margin: 0; line-height: 1.6;">${escapeHtml(inst.descricao)}</p>` : ''}
+      <div style="display: flex; gap: var(--space-3); margin-top: var(--space-2);">
+        <button class="btn-secondary" onclick="viewCursos(${inst.idInstituicao})" style="flex: 1;">
           Ver Cursos
         </button>
       </div>
@@ -180,11 +187,12 @@ function filterInstituicoes() {
 }
 
 function showModal(id = null) {
-  const modal = document.getElementById('institutionModal');
+  if (!modal) return;
+  
   const title = document.getElementById('modalTitle');
   const form = document.getElementById('institutionForm');
   
-  if (!modal || !form) return;
+  if (!form) return;
 
   editingId = id;
 
@@ -197,17 +205,23 @@ function showModal(id = null) {
     document.getElementById('institutionAddress').value = inst.endereco || '';
     document.getElementById('institutionDescription').value = inst.descricao || '';
   } else {
-    if (title) title.textContent = 'Adicionar Instituição';
+    if (title) title.textContent = 'Nova Instituição';
     form.reset();
   }
 
-  modal.classList.add('active');
+  modal.open();
 }
 
 function closeModal() {
-  const modal = document.getElementById('institutionModal');
   if (modal) {
-    modal.classList.remove('active');
+    modal.close();
+  }
+  editingId = null;
+}
+
+function closeDeleteModal() {
+  if (deleteModal) {
+    deleteModal.close();
   }
   editingId = null;
 }
@@ -215,38 +229,54 @@ function closeModal() {
 async function handleSubmit(e) {
   e.preventDefault();
 
-  const nome = document.getElementById('institutionName').value;
-  const endereco = document.getElementById('institutionAddress').value;
-  const descricao = document.getElementById('institutionDescription').value;
+  const nome = document.getElementById('institutionName').value.trim();
+  const endereco = document.getElementById('institutionAddress').value.trim();
+  const descricao = document.getElementById('institutionDescription').value.trim();
 
-  const data = { nome, endereco, descricao };
+  if (!nome) {
+    showToast('O nome da instituição é obrigatório', 'error');
+    return;
+  }
+
+  const data = { nome, endereco: endereco || undefined, descricao: descricao || undefined };
 
   try {
-    const url = editingId 
-      ? `${API_BASE_URL}/instituicoes/${editingId}`
-      : `${API_BASE_URL}/instituicoes`;
+    showLoading();
     
-    const method = editingId ? 'PATCH' : 'POST';
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('notadez_token')}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao salvar instituição');
+    if (editingId) {
+      await apiPatch(`/instituicoes/${editingId}`, data);
+      showToast('Instituição atualizada com sucesso', 'success');
+    } else {
+      await apiPost('/instituicoes', data);
+      showToast('Instituição criada com sucesso', 'success');
     }
-
-    showToast(editingId ? 'Instituição atualizada com sucesso' : 'Instituição criada com sucesso', 'success');
+    
     closeModal();
     await loadInstituicoes();
+    
+    // Se criou uma nova instituição, verifica se ainda precisa de primeiro acesso
+    if (!editingId) {
+      setTimeout(async () => {
+        try {
+          const firstAccess = await apiGet('/dashboard/first-access');
+          if (!firstAccess.isFirstAccess) {
+            // Já tem instituição e curso, pode ir para o dashboard
+            showToast('Configuração inicial concluída! Redirecionando...', 'success');
+            setTimeout(() => {
+              window.location.href = '/index.html';
+            }, 1500);
+          }
+        } catch (error) {
+          console.warn('Erro ao verificar primeiro acesso:', error);
+        }
+      }, 500);
+    }
   } catch (error) {
     console.error('Erro ao salvar instituição:', error);
-    showToast('Erro ao salvar instituição', 'error');
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao salvar instituição';
+    showToast('Erro: ' + errorMessage, 'error');
+  } finally {
+    hideLoading();
   }
 }
 
@@ -255,27 +285,35 @@ function editInstituicao(id) {
 }
 
 async function deleteInstituicao(id) {
-  if (!confirm('Tem certeza que deseja excluir esta instituição? Esta ação não pode ser desfeita.')) {
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/instituicoes/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('notadez_token')}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao excluir instituição');
+  const inst = instituicoes.find(i => i.idInstituicao === id);
+  if (!inst) return;
+  
+  editingId = id;
+  if (deleteModal) {
+    deleteModal.open();
+  } else {
+    // Fallback para confirm se modal não estiver disponível
+    if (confirm(`Tem certeza que deseja excluir a instituição "${inst.nome}"? Esta ação não pode ser desfeita.`)) {
+      await confirmDelete();
     }
+  }
+}
 
+async function confirmDelete() {
+  if (!editingId) return;
+  
+  try {
+    showLoading();
+    await apiDelete(`/instituicoes/${editingId}`);
     showToast('Instituição excluída com sucesso', 'success');
+    closeDeleteModal();
     await loadInstituicoes();
   } catch (error) {
     console.error('Erro ao excluir instituição:', error);
-    showToast('Erro ao excluir instituição', 'error');
+    const errorMessage = error.message || error.error?.message || 'Erro desconhecido ao excluir instituição';
+    showToast('Erro: ' + errorMessage, 'error');
+  } finally {
+    hideLoading();
   }
 }
 
@@ -288,36 +326,19 @@ function showAddInstitutionDialog() {
 }
 
 function escapeHtml(text) {
+  if (!text) return '';
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toast-container') || createToastContainer();
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.textContent = message;
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    if (toast.parentNode) {
-      toast.remove();
-    }
-  }, 4000);
-}
-
-function createToastContainer() {
-  const container = document.createElement('div');
-  container.id = 'toast-container';
-  container.style.cssText = 'position: fixed; top: 1rem; right: 1rem; z-index: 3000;';
-  document.body.appendChild(container);
-  return container;
-}
-
+// Torna funções globais para uso em onclick
 window.showModal = showModal;
 window.closeModal = closeModal;
+window.closeDeleteModal = closeDeleteModal;
 window.showAddInstitutionDialog = showAddInstitutionDialog;
 window.editInstituicao = editInstituicao;
 window.deleteInstituicao = deleteInstituicao;
 window.viewCursos = viewCursos;
+window.confirmDelete = confirmDelete;
+

@@ -8,12 +8,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { InstituicaoService } from './instituicao.service';
 import { CreateInstituicaoDto } from './dto/create-instituicao.dto';
 import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
 
 @Controller('instituicoes')
+@UseGuards(AuthGuard('jwt'))
 export class InstituicaoController {
   constructor(private readonly instituicaoService: InstituicaoService) {}
 

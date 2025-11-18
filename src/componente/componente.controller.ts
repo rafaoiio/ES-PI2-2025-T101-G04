@@ -8,12 +8,15 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ComponenteService } from './componente.service';
 import { CreateComponenteDto } from './dto/create-componente.dto';
 import { UpdateComponenteDto } from './dto/update-componente.dto';
 
 @Controller('componentes')
+@UseGuards(AuthGuard('jwt'))
 export class ComponenteController {
   constructor(private readonly componenteService: ComponenteService) {}
 

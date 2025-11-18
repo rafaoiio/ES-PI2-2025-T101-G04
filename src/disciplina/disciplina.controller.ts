@@ -18,18 +18,45 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { DisciplinaService } from './disciplina.service';
 import { CreateDisciplinaDto } from './dto/create-disciplina.dto';
 import { UpdateDisciplinaDto } from './dto/update-disciplina.dto';
 
 @Controller('disciplinas')
+@UseGuards(AuthGuard('jwt'))
 export class DisciplinaController {
   constructor(private readonly disciplinaService: DisciplinaService) {}
 
   @Get()
-  findAll() {
-    return this.disciplinaService.findAll();
+  async findAll(@Request() req) {
+    try {
+      const idProfessorRaw = req.user?.userId;
+      console.log('[Disciplina Controller] findAll chamado - idProfessor recebido (raw):', idProfessorRaw);
+      
+      // Converte para número explicitamente
+      const idProfessor = idProfessorRaw ? (typeof idProfessorRaw === 'string' ? parseInt(idProfessorRaw, 10) : Number(idProfessorRaw)) : undefined;
+      
+      // Disciplinas são globais - passamos idProfessor apenas para logs, mas retornamos todas
+      const disciplinas = await this.disciplinaService.findAll(idProfessor);
+      console.log('[Disciplina Controller] Total de disciplinas retornadas:', disciplinas.length);
+      
+      return disciplinas;
+    } catch (error) {
+      console.error('[Disciplina Controller] Erro ao buscar disciplinas:', error);
+      throw new HttpException(
+        {
+          message: 'Erro ao buscar disciplinas',
+          error: error.message || 'Erro desconhecido',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Get(':id')
