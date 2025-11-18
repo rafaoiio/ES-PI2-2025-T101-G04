@@ -1,30 +1,56 @@
-//Autor Rafael Gaudencio Dias
-// Descrição: Gerencia as rotas de autenticação, como login e verificação do usuário logado.
+// LAURA
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+  Body,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { AuthGuard } from '@nestjs/passport';
 
-
-// src/auth/auth.controller.ts é responsável por definir as rotas HTTP relacionadas à autenticação
-import { Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
-import { AuthService } from './auth.service'; // Contém a lógica, onde gera o token e válida o usuário
-import { AuthGuard } from '@nestjs/passport'; 
-
-@Controller('auth') // defino o prefixo das rotas
+@Controller('auth')
 export class AuthController {
-  constructor(private auth: AuthService) {} // o AuthSertvice é injetado pelo Nest
+  constructor(private auth: AuthService) {}
 
-  @UseGuards(AuthGuard('local')) // verifica email/senha e a lógica para essa verificação está no local.strategy
-  @Post('login') // defino a rota POST / auth / login
-  async login(@Request() req) { // declaro o método login que recebe o objeto da minha requisição.
-                                // o req recebe o usuário autenticado preenchido pelo guard local.
-    return this.auth.login(req.user);
-    // passo o usuário autenticado para o método login()
-    // retorno o token JWT
+  @Post('login')
+  @UseGuards(AuthGuard('local'))
+  async login(@Request() req) {
+    const result = await this.auth.login(req.user);
+    return {
+      token: result.accessToken,
+      user: {
+        id: result.user.id,
+        nome: result.user.nome,
+        email: result.user.email,
+      },
+    };
   }
 
-  @UseGuards(AuthGuard('jwt')) // aplica o guard jwt que verifica o token que recebi do header
-  @Get('me') // define a rota GET/auth/me
-  me(@Request() req) {
-    // defino o método me que receb o objeto req
-    return req.user; // { userId, email, name }
-    // retorno o usuário autenticado
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  async me(@Request() req) {
+    const user = await this.auth.getUserById(req.user.userId);
+    const { senha: _, ...safe } = user as any;
+    return safe;
+  }
+
+  /**
+   * Endpoint para solicitar recuperação de senha.
+   */
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    return this.auth.forgotPassword(body.email);
+  }
+
+  /**
+   * Endpoint para redefinir senha usando token.
+   */
+  @Post('reset-password')
+  async resetPassword(
+    @Body() body: { token: string; novaSenha: string },
+  ) {
+    return this.auth.resetPassword(body.token, body.novaSenha);
   }
 }
