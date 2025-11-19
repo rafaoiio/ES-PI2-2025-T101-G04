@@ -1,5 +1,6 @@
 // LUCAS
 import {
+  IsNumber,
   IsString,
   IsNotEmpty,
   IsOptional,
@@ -8,9 +9,11 @@ import {
 } from 'class-validator';
 
 export class CreateDisciplinaDto {
+
   @IsString()
   @IsNotEmpty({ message: 'Nome é obrigatório' })
   nome: string;
+
 
   @IsString()
   @IsOptional()

@@ -41,7 +41,7 @@ const connectString =
       password: process.env.ORACLE_PASSWORD!,
       connectString,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
       logging: isDev ? ['error', 'schema', 'warn'] : ['error'],
     }),
     UsersModule,
